@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
     "serve": "webpack-dev-server --config webpack.config.js --mode development",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:test": "karma start --auto-watch --no-single-run --reporters dots",
+    "test": "karma start"
   },
   "repository": {
     "type": "git",
