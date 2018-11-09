@@ -36,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/ckanz/congressional-representatives-california-visualisation/issues"
   },
-  "homepage": "https://github.com/ckanz/congressional-representatives-california-visualisation#readme"
+  "homepage": "https://github.com/ckanz/congressional-representatives-california-visualisation#readme",
+  "dependencies": {
+    "node-fetch": "^2.2.1"
+  }
 }
