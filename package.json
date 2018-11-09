@@ -1,0 +1,40 @@
+{
+  "name": "congressional-representatives-california-visualisation",
+  "version": "0.1.0",
+  "description": "This purpose of this project is to create a web application to monitor the behaviour of Californian Members of Congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).",
+  "main": "src/app.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js --mode production",
+    "serve": "webpack-dev-server --config webpack.config.js --mode development",
+    "watch:test": "karma start --auto-watch --no-single-run --reporters dots",
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckanz/congressional-representatives-california-visualisation.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "css-loader": "^1.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "jasmine": "^3.2.0",
+    "karma": "^3.0.0",
+    "karma-jasmine": "^1.1.2",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack": "^3.0.5",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ckanz/congressional-representatives-california-visualisation/issues"
+  },
+  "homepage": "https://github.com/ckanz/congressional-representatives-california-visualisation#readme"
+}
