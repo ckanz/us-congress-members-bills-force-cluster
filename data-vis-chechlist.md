@@ -2,15 +2,16 @@ Data Visualisation Checklist from [here](https://medium.com/empathybroker/creati
 
 ### Why?
 
-  1. **Purpose**: Keep track on members of the US house and senate.
+  1. **Purpose**: Keep track on Californian members of the US house and senate.
   2. **Insight**:
   * voting patterns
   * statements
   * travel expenses
   3. **Action**:
-  * observe and report on behaviour
-  * detext notable behaviour of members
-  * investigate further
+  * observe and report on behaviours of the members of house and senate
+  * detect noteworthy behaviour of any the members
+  * compare Californian members with any other members in the house or senate
+  * conduct further investigation
 
 ### Who?
 **Audience**: small (50-person, not highly technical) nonprofit public accountability group
@@ -35,6 +36,7 @@ Data Visualisation Checklist from [here](https://medium.com/empathybroker/creati
   * Nomination data and committee hearing data is updated at 12 p.m. every day.
   * Data on personal explanations and leaves of absence is updated at 12 p.m. every day.
   * Usage is limited to 5000 requests per day.
+  * 20 results with pagination supported.
 
 ### How?
 
