@@ -21,10 +21,10 @@ The details page of a member contains all information about the member in the to
 # Concept 2
 ### Sortable grid of business cards
 ![Concept2](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/sketches/concept/concept_2.jpg?raw=true)
-ngress.
+
 In the second concept, all related members of Congress are listed in a grid of business cards. On each business card are the overall details of each member. Like the previous concept, the list can be sorted by the same metrics state above.
 
-When clicking on a business card, the details page of the member will be displayed. This details page contains the business card in the top left and in the center a dashbaord displaying the number of and type of votes in a bar chart, expenses over time by type in a stacked bar chart and number of statements over time on a line chart. When interacting with elements on each chart, the detail of each data point (vote, expense or statement) can be seen in a tooltip.
+When clicking on a business card, the details page of the member will be displayed. This details page contains the business card in the top left and in the center a dashbaord displaying the number of and type of votes in a bar chart, expenses over time by type in a stacked bar chart and number of statements over time on a line chart. When interacting with elements on each chart, the detail of each data point (vote, expense or statement) can be seen in a tooltip. A small list icon above each chart will bring the user to the full detailed list of votes, expenses or statements on a new page.
 
 ---
 
