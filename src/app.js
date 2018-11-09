@@ -1,3 +1,6 @@
 import './style.css';
+import { getMembers } from './api-functions';
 
-console.log('Hello World!');
+getMembers(data => {
+  console.log(data);
+});
