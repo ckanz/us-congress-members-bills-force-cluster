@@ -1,15 +1,55 @@
 import { token } from './creds.json';
 
-const membersUrl = 'https://api.propublica.org/congress/v1/members/senate/CA/current.json';
-
-const getMembers = (callback) => {
-  fetch(membersUrl,  { headers: {
+const getApiData = (url, callback) => {
+  fetch(url,  { headers: {
       'X-API-Key': token
     }}).then(res => {
     res.json().then(data => {
       if (callback) {
         callback(data);
       }
+    });
+  });
+};
+
+const enrichMembersData = memberArray => {
+  memberArray.forEach(member => {
+    const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
+    getApiData(memberDetailUrl, response => {
+      member.detail = response.results[0];
+    });
+
+    const memberStatementUrl = `https://api.propublica.org/congress/v1/members/${member.id}/statements.json`;
+    getApiData(memberStatementUrl, response => {
+      member.statements = response.results;
+    });
+
+    const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
+    getApiData(memberVoteUrl, response => {
+      member.votes = response.results[0].votes;
+    });
+  });
+
+  return memberArray;
+};
+
+const getMembers = (callback) => {
+  const membersSenate = 'https://api.propublica.org/congress/v1/members/senate/CA/current.json';
+  const membersHouse = 'https://api.propublica.org/congress/v1/members/house/CA/current.json';
+  let membersArray = [];
+
+  getApiData(membersHouse, response => {
+    membersArray = membersArray.concat(response.results);
+    membersArray.forEach(member => {
+      member.type = 'house';
+    });
+    getApiData(membersSenate, response => {
+      membersArray = membersArray.concat(response.results);
+      membersArray.forEach(member => {
+        member.type = 'senate';
+      });
+      membersArray = enrichMembersData(membersArray);
+      callback(membersArray);
     });
   });
 };
