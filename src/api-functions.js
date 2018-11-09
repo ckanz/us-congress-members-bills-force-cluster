@@ -38,11 +38,13 @@ const getMembers = (callback) => {
   const membersHouse = 'https://api.propublica.org/congress/v1/members/house/CA/current.json';
   let membersArray = [];
 
+/*
   getApiData(membersHouse, response => {
     membersArray = membersArray.concat(response.results);
     membersArray.forEach(member => {
       member.type = 'house';
     });
+*/
     getApiData(membersSenate, response => {
       membersArray = membersArray.concat(response.results);
       membersArray.forEach(member => {
@@ -51,7 +53,7 @@ const getMembers = (callback) => {
       membersArray = enrichMembersData(membersArray);
       callback(membersArray);
     });
-  });
+  // });
 };
 
 export {
