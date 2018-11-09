@@ -1,6 +1,6 @@
 {
   "name": "congressional-representatives-california-visualisation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "This purpose of this project is to create a web application to monitor the behaviour of Californian Members of Congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).",
   "main": "src/app.js",
   "scripts": {
