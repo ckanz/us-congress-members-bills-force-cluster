@@ -24,6 +24,7 @@ body {
 }
 
 #tooltip {
+  background: white;
   opacity: 0;
   transition: opacity .5s;
   position: fixed;
@@ -32,6 +33,25 @@ body {
   width: 400px;
   height: 300px;
   border: 2px black solid;
-  padding: 10px;
+  padding-left: 10px;
   font-size: 10px;
+}
+
+#statements {
+  background: white;
+  opacity: 0;
+  transition: opacity .5s;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  width: 400px;
+  height: 500px;
+  border: 2px black solid;
+  padding-left: 10px;
+  font-size: 10px;
+}
+
+#loading {
+  margin: 50px;
+  font-size: 30px;
 }

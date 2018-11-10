@@ -5,9 +5,17 @@ import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { max, min } from 'd3-array';
 import { arc } from 'd3-shape';
+import { zoom } from 'd3-zoom';
 
 const width = window.availWidth || 1000;
 const height = window.availHeight || 500;
+
+const myZoom = zoom()
+  .on('zoom', (d, i, elements) => {
+    if (elements[i] && elements[i].__zoom) {
+      select('#cluster').attr('transform', elements[i].__zoom);
+    }
+  });
 
 const myInnerArc = arc()
   .innerRadius(d => d.radius - d.radius * 0.25)
@@ -15,14 +23,14 @@ const myInnerArc = arc()
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
-    const angle = Math.random(); // TODO: replace with vote behaviour metric
+    const angle = d.raw.detail.roles[0].missed_votes_pct / 100;
     return (angle * Math.PI * 2);
   });
 
-const getRadialBarForQuarter = (quarter) => {
+const getRadialBarForQuarter = (quarter, scale) => {
   const radialBarChart = arc()
     .innerRadius(d => d.radius)
-    .outerRadius(d => d.radius + d.radius / 5 * Math.random()) // TODO: use quaterly expenses with scale
+    .outerRadius(d => d.radius + scale(d.radialBars[quarter - 1]))
     .startAngle(d => ((quarter - 1) / 4) * (Math.PI * 2))
     .endAngle(d => (quarter / 4) * (Math.PI * 2));
   return radialBarChart;
@@ -32,6 +40,13 @@ const getScale = data => {
   const maxValue = max(data.map(d => d.seniority));
   const minValue = min(data.map(d => d.seniority));
   const scale = scaleLinear().range([8, 20]).domain([minValue, maxValue]); // TODO: make range dynamic to screen size
+  return scale;
+};
+
+const getRadialBarScale = data => {
+  const maxValue = max(data.map(d => getExpenseValue(d, 0)));
+  const minValue = min(data.map(d => getExpenseValue(d, 0)));
+  const scale = scaleLinear().range([0, 5]).domain([minValue, maxValue]); // TODO: make range dynamic to screen size
   return scale;
 };
 
@@ -57,8 +72,11 @@ const getForce = (nodeData, clusterElement) => {
   return myForce;
 };
 
-const renderCircles = (clusterData) => {
+const renderCircles = (clusterData, radialBarScale) => {
+
   const myCluster= select('#cluster');
+  // myCluster.call(myZoom); // TODO: fix zoom
+
   const myNodes = myCluster
     .selectAll('g')
     .data(clusterData)
@@ -72,6 +90,7 @@ const renderCircles = (clusterData) => {
         .style('opacity', 0.9);
       // TODO: create a nice, styled component for this and extract data from record nicer
       tooltip.node().innerHTML = `<div>
+        <h3>Details:</h3>
         <p>Name: ${d.raw.name}</p>
         <p>Party: ${d.raw.party}</p>
         <p>Role: ${d.raw.role}</p>
@@ -91,6 +110,16 @@ const renderCircles = (clusterData) => {
         <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
       </div>`;
       // TODO: replace link text with icons
+
+
+    const statements = select('#statements')
+    statements
+      .style('opacity', 0.9);
+    statements.node().innerHTML = `<div>
+      <h3>Recent Statements:</h3>
+        <div>(Needs to be formatted)</div>
+        <div style="overflow: auto; height: 450px">${JSON.stringify(d.raw.statements)}</div>
+    </div>`;
     });
   myNodes
     .append('circle')
@@ -98,7 +127,7 @@ const renderCircles = (clusterData) => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    .style('opacity', d => Math.random()); // TODO: replace with party loyalty metric
+    .style('opacity', d => d.raw.detail.roles[0].votes_with_party_pct / 100);
 
   myNodes
     .append('path')
@@ -110,7 +139,7 @@ const renderCircles = (clusterData) => {
   for (let i=1; i<=4; i++) {
     radialBarChartContainer
       .append('path')
-      .attr('d', getRadialBarForQuarter(i))
+      .attr('d', getRadialBarForQuarter(i, radialBarScale))
       .attr('class', 'node-radial-bar-chart')
       .style('fill', '#a6adbd');
   }
@@ -129,6 +158,13 @@ const renderCircles = (clusterData) => {
   return myNodes;
 }
 
+const getExpenseValue = (dataPoint, i) => {
+  if (dataPoint && dataPoint.quarterExpensesArray && dataPoint.quarterExpensesArray[i] && dataPoint.quarterExpensesArray[i][0] && dataPoint.quarterExpensesArray[i][0].amount) {
+    return dataPoint.quarterExpensesArray[i][0].amount;
+  }
+  return 0;
+};
+
 const createNodeData = data => {
   const scale = getScale(data);
   return data.map(dataPoint => {
@@ -136,6 +172,12 @@ const createNodeData = data => {
       x: width / 2,
       y: height / 2,
       radius: scale(dataPoint.seniority),
+      radialBars: [
+        getExpenseValue(dataPoint, 0),
+        getExpenseValue(dataPoint, 1),
+        getExpenseValue(dataPoint, 2),
+        getExpenseValue(dataPoint, 3)
+      ],
       raw: dataPoint,
       text: dataPoint.name,
       color: dataPoint.party === 'D' ? '#3333FF' : '#E81B23' // TODO: do a better check (other parties?)
@@ -143,13 +185,16 @@ const createNodeData = data => {
   })
 };
 
+document.getElementById('loading').innerHTML = 'Loading...';
 getMembers(data => {
   console.log(data);
   const nodeData = createNodeData(data);
+  const radialBarScale = getRadialBarScale(data);
 
-  const clusterElement = renderCircles(nodeData);
+  const clusterElement = renderCircles(nodeData, radialBarScale);
 
   getForce(nodeData, clusterElement);
+  document.getElementById('loading').innerHTML = '';
 });
 
 // TODO: change radius of cluster nodes to selected metric
