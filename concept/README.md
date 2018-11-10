@@ -1,4 +1,4 @@
-On this document are three different concepts that have been sketched out for the web application:
+On this document are three different concepts that have been sketched out for the web application. The inital data visualisation checklist is [here](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/documentation/concept/data-vis-chechlist.md).
 
 # Concpet 1
 ### Sortable Bar Chart of Members
