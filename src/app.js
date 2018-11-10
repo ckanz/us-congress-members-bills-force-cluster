@@ -4,9 +4,21 @@ import { forceSimulation, forceCollide, forceManyBody, forceCenter } from 'd3-fo
 import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { max, min } from 'd3-array';
+import { arc } from 'd3-shape';
 
 const width = window.availWidth || 1000;
 const height = window.availHeight || 500;
+
+const myArc = arc()
+  .innerRadius(d => d.radius - d.radius * 0.25)
+  .outerRadius(d => d.radius - d.radius * 0.17)
+  .cornerRadius(12)
+  .startAngle(0)
+  .endAngle(d => {
+    const angle = Math.random(); // TODO: replace with vote behaviour metric
+    return (angle * Math.PI * 2) - 0.01;
+  });
+
 
 const getScale = data => {
   const maxValue = max(data.map(d => d.seniority));
@@ -52,6 +64,13 @@ const renderCircles = (clusterData) => {
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
     .style('opacity', d => Math.random()); // TODO: replace with party loyalty metric
+
+  myNodes
+    .append('path')
+    .attr('d', myArc)
+    .attr('class', 'node-arc')
+    .style('fill', 'grey');
+
   myNodes
     .append('foreignObject')
     .attr('x', d => -d.radius)
