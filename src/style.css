@@ -1,3 +1,14 @@
 div {
   font-size: 40px;
 }
+.node-text {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cluster-node {
+  stroke: black;
+  stroke-width: 2px;
+}

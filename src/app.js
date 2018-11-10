@@ -11,19 +11,23 @@ const height = window.availHeight || 500;
 const getScale = data => {
   const maxValue = max(data.map(d => d.seniority));
   const minValue = min(data.map(d => d.seniority));
-  const scale = scaleLinear().range([20, 100]).domain([minValue, maxValue]);
+  const scale = scaleLinear().range([8, 20]).domain([minValue, maxValue]); // TODO: make range dynamic to screen size
   return scale;
 };
 
 const getForce = (nodeData, clusterElement) => {
   const myForce = forceSimulation()
-    .force('charge', forceManyBody())
+    // .force('charge', forceManyBody())
     .force('collide', forceCollide(d => d.radius).strength(.2))
     .force('center', forceCenter(width / 2, height / 2));
 
   const layoutTick = () => {
     clusterElement
     .attr('transform', d => {
+      const topBoundary = d.radius;
+      if (d.y < topBoundary) {
+        d.y = topBoundary;
+      }
       return `translate(${d.x},${d.y})`;
     });
   };
@@ -46,7 +50,19 @@ const renderCircles = (clusterData) => {
     .attr('cx', 0)
     .attr('cy', 0)
     .attr('r', d => d.radius)
-    .style('fill', d => d.color);
+    .style('fill', d => d.color)
+    .style('opacity', d => Math.random()); // TODO: replace with party loyalty metric
+  myNodes
+    .append('foreignObject')
+    .attr('x', d => -d.radius)
+    .attr('y', d => -d.radius)
+    .attr('width', d => d.radius * 2)
+    .attr('height', d => d.radius * 2)
+    .append('xhtml:div')
+    .attr('class', 'node-text')
+    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`) // TODO: find better way to attach style to xhtml and define font size
+    .text(d => d.text);
+
   return myNodes;
 }
 
