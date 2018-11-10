@@ -2,7 +2,7 @@ On this document are three different concepts that have been sketched out for th
 
 # Concpet 1
 ### Sortable Bar Chart of Members
-![Concept1](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/sketches/concept/concept_1.jpg?raw=true)
+![Concept1](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/master/concept/concept_1.jpg?raw=true)
 
 In this concept, each member of Congress is listed in a bar chart, of which the metric of the x-axis can be chosen and sorted by. Metrics that members can be sorted (descending and ascending) by are
 * total number of votes
@@ -20,7 +20,7 @@ The details page of a member contains all information about the member in the to
 
 # Concept 2
 ### Sortable grid of business cards
-![Concept2](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/sketches/concept/concept_2.jpg?raw=true)
+![Concept2](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/master/concept/concept_2.jpg?raw=true)
 
 In the second concept, all related members of Congress are listed in a grid of business cards. On each business card are the overall details of each member. Like the previous concept, the list can be sorted by the same metrics state above.
 
@@ -29,7 +29,7 @@ When clicking on a business card, the details page of the member will be display
 ---
 
 # Concept 3
-![Concept3](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/sketches/concept/concept_3.jpg?raw=true)
+![Concept3](https://github.com/ckanz/congressional-representatives-california-visualisation/blob/master/concept/concept_3.jpg?raw=true)
 
 The thrid concept is a force cluster where each cluster node represents a member of Congress. In the center of each node is the name of the member and the node's background color represents the associated party. The size of each node can represent any of the listed metrics above, which can be selected and changed through a drop-down list. A three-coloured  border around the node displays the ratio of yes, no and not voted votes of each member. Nodes are linked though lines of different stroke-widths. These lines and theor widths indicate the number of same votes on the same bills. The thicker the line between two nodes is, the more same votes on the same bill have taken place by both of these members.
 
