@@ -9,16 +9,24 @@ import { arc } from 'd3-shape';
 const width = window.availWidth || 1000;
 const height = window.availHeight || 500;
 
-const myArc = arc()
+const myInnerArc = arc()
   .innerRadius(d => d.radius - d.radius * 0.25)
   .outerRadius(d => d.radius - d.radius * 0.17)
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
     const angle = Math.random(); // TODO: replace with vote behaviour metric
-    return (angle * Math.PI * 2) - 0.01;
+    return (angle * Math.PI * 2);
   });
 
+const getRadialBarForQuarter = (quarter) => {
+  const radialBarChart = arc()
+    .innerRadius(d => d.radius)
+    .outerRadius(d => d.radius + d.radius / 5 * Math.random()) // TODO: use quaterly expenses with scale
+    .startAngle(d => ((quarter - 1) / 4) * (Math.PI * 2))
+    .endAngle(d => (quarter / 4) * (Math.PI * 2));
+  return radialBarChart;
+}
 
 const getScale = data => {
   const maxValue = max(data.map(d => d.seniority));
@@ -67,9 +75,18 @@ const renderCircles = (clusterData) => {
 
   myNodes
     .append('path')
-    .attr('d', myArc)
+    .attr('d', myInnerArc)
     .attr('class', 'node-arc')
     .style('fill', 'grey');
+
+  const radialBarChartContainer = myNodes.append('g').attr('class', 'radial-bar-chart');
+  for (let i=1; i<=4; i++) {
+    radialBarChartContainer
+      .append('path')
+      .attr('d', getRadialBarForQuarter(i))
+      .attr('class', 'node-radial-bar-chart')
+      .style('fill', 'orange');
+  }
 
   myNodes
     .append('foreignObject')
