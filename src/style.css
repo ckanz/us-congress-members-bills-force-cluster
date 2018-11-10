@@ -32,4 +32,6 @@ body {
   width: 400px;
   height: 300px;
   border: 2px black solid;
+  padding: 10px;
+  font-size: 10px;
 }

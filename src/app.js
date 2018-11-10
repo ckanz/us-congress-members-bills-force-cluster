@@ -69,8 +69,28 @@ const renderCircles = (clusterData) => {
     .on('click', (d, i, e) => {
       const tooltip = select('#tooltip');
       tooltip
-        .style('opacity', 0.9)
-        .text('Tooltip placeholder text');
+        .style('opacity', 0.9);
+      // TODO: create a nice, styled component for this and extract data from record nicer
+      tooltip.node().innerHTML = `<div>
+        <p>Name: ${d.raw.name}</p>
+        <p>Party: ${d.raw.party}</p>
+        <p>Role: ${d.raw.role}</p>
+        <p>Gender: ${d.raw.gender}</p>
+        <p>Seniority: ${d.raw.seniority}</p>
+        <p>Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%</p>
+        <p>Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%</p>
+        <p>Bills sponsored: ${d.raw.detail.roles[0].bills_sponsored}</p>
+        <p>Bills co-sponsored: ${d.raw.detail.roles[0].bills_cosponsored}</p>
+        <p>Contact Form: <a href="${d.raw.detail.roles[0].contact_form}" target="_blank">Link to Form</a></p>
+        <p>Phone: ${d.raw.detail.roles[0].phone}</p>
+        <hr />
+        <a href="${d.raw.times_topics_url}" target="_blank">Times Topics |</a>
+        <a href="https://twitter.com/${d.raw.twitter_id}" target="_blank">Twitter Account |</a>
+        <a href="https://facebook.com/${d.raw.facebook_account}" target="_blank">Facebook Account |</a>
+        <a href="https://youtube.com/${d.raw.youtube_id}" target="_blank">Youtube Account |</a>
+        <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
+      </div>`;
+      // TODO: replace link text with icons
     });
   myNodes
     .append('circle')
