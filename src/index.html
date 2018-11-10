@@ -2,9 +2,25 @@
 <html>
 
 <body>
-
-    <div>Hello World!</div>
-
+    <h2>US Congress Members of State CA</h2>
+    <div class="interaction-bar">
+        <span>Size Nodes by: </span>
+        <select id="size-dropdown">
+          <option value="Seneriority">Seneriority</option>
+          <option value="Bills sponsored">Bills sponsored</option>
+          <option value="Bills co-sponsored">Bills co-sponsored</option>
+          <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
+          <option value="Total Expenses">Total Expense</option>
+      </select>
+      <div>
+      <input type="checkbox" value="arc" checked> Show missed votes ratio<br>
+      <input type="checkbox" value="radial-bar" checked> Show quarterly expenses<br>
+      <input type="checkbox" value="opacity" checked> Show Party Loyalty<br>
+      </div>
+    </div>
+    <div id="statements"></div>
+    <div id="tooltip"></div>
+    <div id="loading"></div>
+    <svg id="cluster" style="width: 100%; height: 1000px"></svg>
 </body>
-
 </html>

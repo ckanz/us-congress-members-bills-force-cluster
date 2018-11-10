@@ -36,3 +36,9 @@ The thrid concept is a force cluster where each cluster node represents a member
 The force cluster can be split apart onto different areas of the screen by different dimensions, e.g. party or vote type on a certain bill.
 
 ---
+
+# Verdict
+
+After browsing deeper through the API's data, the verdict is to do the force cluster approach. Size of each node can be metrics such as, "senirority", "bills sponsored" or "bills cosponsored" or total expenses. The color of each node represents the members' party.. Metrics such as "missed votes_pct" could be used for an arc inside a node. "votes with party pct": could be good for opacity, so that colour density of a node represents party loyaltiy. Links and their stroke-width between nodes can come from the metric on how often two members agree during their votes. Finally, quarterly expenses could be displayed as a radial bar chart around each node. When clicking on a node, full details of a member will be displayed.
+
+The reason to choose this piece is because it has the potential to give a good "at a glance" overview of the members. How much members agree on votes is a unique feature that the other conecpts don't have.

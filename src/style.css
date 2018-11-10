@@ -1,3 +1,61 @@
-div {
-  font-size: 40px;
+body {
+  font-family: Arial,Helvetica,sans-serif
+}
+
+.interaction-bar {
+  cursor: forbidden;
+}
+
+.node-text {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cluster-node {
+  stroke: black;
+  stroke-width: 2px;
+  cursor: pointer;
+}
+
+.node-arc {
+  stroke-width: 0px;
+}
+
+.node-radial-bar-chart {
+  stroke-width: 0.5px;
+}
+
+#tooltip {
+  background: white;
+  opacity: 0;
+  transition: opacity .5s;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 400px;
+  height: 300px;
+  border: 2px black solid;
+  padding-left: 10px;
+  font-size: 10px;
+}
+
+#statements {
+  background: white;
+  opacity: 0;
+  transition: opacity .5s;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  width: 400px;
+  height: 500px;
+  border: 2px black solid;
+  padding-left: 10px;
+  font-size: 10px;
+}
+
+#loading {
+  margin: 50px;
+  font-size: 30px;
 }
