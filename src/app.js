@@ -124,3 +124,9 @@ getMembers(data => {
 
   getForce(nodeData, clusterElement);
 });
+
+// TODO: change radius of cluster nodes to selected metric
+document.getElementById('size-dropdown').addEventListener('change', (e) => {
+  alert(`Sizing by ${e.srcElement.value} not implemented yet.`);
+  e.srcElement.value = 'Seneriority';
+});
