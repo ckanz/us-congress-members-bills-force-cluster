@@ -12,6 +12,7 @@ body {
 .cluster-node {
   stroke: black;
   stroke-width: 2px;
+  cursor: pointer;
 }
 
 .node-arc {
@@ -20,4 +21,15 @@ body {
 
 .node-radial-bar-chart {
   stroke-width: 0.5px;
+}
+
+#tooltip {
+  opacity: 0;
+  transition: opacity .5s;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 400px;
+  height: 300px;
+  border: 2px black solid;
 }

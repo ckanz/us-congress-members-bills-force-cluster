@@ -66,6 +66,13 @@ const renderCircles = (clusterData) => {
     .append('g')
     .attr('class', 'cluster-node');
   myNodes
+    .on('click', (d, i, e) => {
+      const tooltip = select('#tooltip');
+      tooltip
+        .style('opacity', 0.9)
+        .text('Tooltip placeholder text');
+    });
+  myNodes
     .append('circle')
     .attr('cx', 0)
     .attr('cy', 0)
