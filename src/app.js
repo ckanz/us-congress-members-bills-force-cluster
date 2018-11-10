@@ -37,9 +37,9 @@ const getScale = data => {
 
 const getForce = (nodeData, clusterElement) => {
   const myForce = forceSimulation()
-    // .force('charge', forceManyBody())
-    .force('collide', forceCollide(d => d.radius).strength(.2))
-    .force('center', forceCenter(width / 2, height / 2));
+    .force('charge', forceManyBody().strength(0.2))
+    .force('collide', forceCollide(d => d.radius * 1.2).strength(.3))
+    // .force('center', forceCenter(width / 2, height / 2));
 
   const layoutTick = () => {
     clusterElement
@@ -77,7 +77,7 @@ const renderCircles = (clusterData) => {
     .append('path')
     .attr('d', myInnerArc)
     .attr('class', 'node-arc')
-    .style('fill', 'grey');
+    .style('fill', '#671f66');
 
   const radialBarChartContainer = myNodes.append('g').attr('class', 'radial-bar-chart');
   for (let i=1; i<=4; i++) {
@@ -85,7 +85,7 @@ const renderCircles = (clusterData) => {
       .append('path')
       .attr('d', getRadialBarForQuarter(i))
       .attr('class', 'node-radial-bar-chart')
-      .style('fill', 'orange');
+      .style('fill', '#a6adbd');
   }
 
   myNodes
@@ -111,7 +111,7 @@ const createNodeData = data => {
       radius: scale(dataPoint.seniority),
       raw: dataPoint,
       text: dataPoint.name,
-      color: dataPoint.party === 'D' ? 'blue' : 'red' // TODO: use real party color codes and do a better check (other parties?)
+      color: dataPoint.party === 'D' ? '#3333FF' : '#E81B23' // TODO: do a better check (other parties?)
     }
   })
 };
