@@ -14,6 +14,7 @@ module.exports = config => {
     },
     reporters: ['mocha'],
     webpack: {
+      mode: "production",
       module: {
         rules: [
           {

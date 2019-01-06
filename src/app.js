@@ -109,18 +109,8 @@ const renderCircles = (clusterData, radialBarScale) => {
         <a href="https://youtube.com/${d.raw.youtube_id}" target="_blank">Youtube Account |</a>
         <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
       </div>`;
-      // TODO: replace link text with icons
-
-
-    const statements = select('#statements')
-    statements
-      .style('opacity', 0.9);
-    statements.node().innerHTML = `<div>
-      <h3>Recent Statements:</h3>
-        <div>(Needs to be formatted)</div>
-        <div style="overflow: auto; height: 450px">${JSON.stringify(d.raw.statements)}</div>
-    </div>`;
     });
+
   myNodes
     .append('circle')
     .attr('cx', 0)

@@ -17,23 +17,12 @@ const enrichMembersData = (memberArray, callback) => {
     const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
     getApiData(memberDetailUrl, response => {
       member.detail = response.results[0];
-      const memberStatementUrl = `https://api.propublica.org/congress/v1/members/${member.id}/statements.json`;
-      getApiData(memberStatementUrl, response => {
-	member.statements = response.results;
-	const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
-	getApiData(memberVoteUrl, response => {
-	  member.votes = response.results[0].votes;
-	  for (let i=1;i<=4;i++) {
-	    member.quarterExpensesArray = [];
-	    const memberExpensesUrl = `https://api.propublica.org/congress/v1/members/${member.id}/office_expenses/2018/${i}.json`;
-	    getApiData(memberExpensesUrl, response => {
-	      member.quarterExpensesArray.push(response.results);
-	      if (index === memberArray.length - 1 && i === 4) {
-		callback(memberArray);
-	      }
-	    });
-	  }
-	});
+      const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
+      getApiData(memberVoteUrl, response => {
+        member.votes = response.results[0].votes;
+        if (index === memberArray.length - 1) {
+          callback(memberArray);
+        }
       });
     });
   });
