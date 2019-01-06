@@ -119,12 +119,15 @@ const renderCircles = (clusterData, radialBarScale) => {
     .style('fill', d => d.color)
     .style('opacity', d => d.raw.detail.roles[0].votes_with_party_pct / 100);
 
+  /*
   myNodes
     .append('path')
     .attr('d', myInnerArc)
     .attr('class', 'node-arc')
     .style('fill', '#671f66');
+  */
 
+  /*
   const radialBarChartContainer = myNodes.append('g').attr('class', 'radial-bar-chart');
   for (let i=1; i<=4; i++) {
     radialBarChartContainer
@@ -133,6 +136,7 @@ const renderCircles = (clusterData, radialBarScale) => {
       .attr('class', 'node-radial-bar-chart')
       .style('fill', '#a6adbd');
   }
+  */
 
   myNodes
     .append('foreignObject')
