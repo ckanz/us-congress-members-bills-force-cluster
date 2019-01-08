@@ -93,6 +93,50 @@ const renderCircles = (clusterData, radialBarScale) => {
     .append('g')
     .attr('class', 'cluster-node');
 
+  myNodes
+    .on('mouseenter', (d, i, e) => {
+      const innerText = select(e[i]).select('.node-text');
+      innerText
+        .transition()
+        .style('opacity', 0)
+        .on('end', () => {
+          innerText
+          .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 6}px; line-height:${d.radius / 4}px;`)
+          .text('');
+
+          innerText
+            .append('div')
+            .text(`Party: ${d.raw.party}`)
+            .append('div')
+            .text(`Gender: ${d.raw.gender}`)
+            .append('div')
+            .text(`Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%`)
+            .append('div')
+            .text(`Bills (co-)sponsored: ${d.raw.detail.roles[0].bills_sponsored + d.raw.detail.roles[0].bills_cosponsored}`)
+            .append('div')
+            .text(`Role: ${d.raw.role}`)
+            .append('div')
+            .text(`Seniority: ${d.raw.seniority}`)
+            .append('div')
+            .text(`Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%`)
+            .transition()
+            .style('opacity', 1);
+        });
+      })
+      .on('mouseleave', (d, i, e) => {
+        const innerText = select(e[i]).select('.node-text');
+        innerText
+          .transition()
+          .style('opacity', 0)
+          .on('end', () => {
+            innerText
+              .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
+              .text(d.text)
+              .transition()
+              .style('opacity', 1);
+          });
+    });
+
   /*
   myNodes
     .on('click', (d, i, e) => {
@@ -158,7 +202,7 @@ const renderCircles = (clusterData, radialBarScale) => {
     .attr('height', d => d.radius * 2)
     .append('xhtml:div')
     .attr('class', 'node-text')
-    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`) // TODO: find better way to attach style to xhtml and define font size
+    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
     .text(d => d.text);
 
   return myNodes;
