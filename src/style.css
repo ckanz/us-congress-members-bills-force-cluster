@@ -10,29 +10,7 @@ body {
   cursor: default;
 } 
 
-.node-arc {
-  stroke-width: 0px;
-}
-
-.node-radial-bar-chart {
-  stroke-width: 0.5px;
-}
-
-#tooltip, #statements {
-  background: white;
-  opacity: 0;
-  transition: opacity .5s;
-  position: fixed;
-  border: 2px black solid;
-  padding-left: 10px;
-  font-size: 10px;
-  right: 10px;
-  width: 400px;
-  height: 300px;
-  pointer-events: none;
-}
-
-#viz-container, #top-bar, #loading {
+.top-fixed {
   width: 100%;
   position: fixed;
   top: 0px;
@@ -42,7 +20,8 @@ body {
 #top-bar {
   padding-left: 20px;
   background: white;
-  box-shadow: 0px 10px 10px white;
+  box-shadow: 0px 1px 10px white;
+  border-bottom: 1px solid black;
 }
 
 #loading {
