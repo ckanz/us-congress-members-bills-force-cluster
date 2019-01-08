@@ -7,15 +7,16 @@ import { max, min } from 'd3-array';
 import { arc } from 'd3-shape';
 import { zoom } from 'd3-zoom';
 
-const width = window.availWidth || 1000;
-const height = window.availHeight || 500;
+const width = window.innerWidth || 1000;
+const height = window.innerHeight || 500;
 
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
     if (elements[i] && elements[i].__zoom) {
       select('#cluster').attr('transform', elements[i].__zoom);
     }
-  });
+  })
+  .scaleExtent([0.5, 5]);
 
 const myInnerArc = arc()
   .innerRadius(d => d.radius - d.radius * 0.25)
@@ -73,16 +74,13 @@ const getForce = (nodeData, clusterElement) => {
 };
 
 const renderCircles = (clusterData, radialBarScale) => {
-
-  const myCluster= select('#cluster');
-  // myCluster.call(myZoom); // TODO: fix zoom
-
-  const myNodes = myCluster
+  const myNodes = select('#cluster')
     .selectAll('g')
     .data(clusterData)
     .enter()
     .append('g')
     .attr('class', 'cluster-node');
+
   myNodes
     .on('click', (d, i, e) => {
       const tooltip = select('#tooltip');
@@ -184,10 +182,11 @@ getMembers(data => {
   console.log(data);
   const nodeData = createNodeData(data);
   const radialBarScale = getRadialBarScale(data);
-
   const clusterElement = renderCircles(nodeData, radialBarScale);
-
   getForce(nodeData, clusterElement);
+  select('#viz-container')
+    .style('height', height)
+    .call(myZoom);
   document.getElementById('loading').innerHTML = '';
 });
 

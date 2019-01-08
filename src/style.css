@@ -27,35 +27,44 @@ body {
   stroke-width: 0.5px;
 }
 
-#tooltip {
+#tooltip, #statements {
   background: white;
   opacity: 0;
   transition: opacity .5s;
   position: fixed;
-  right: 10px;
-  bottom: 10px;
-  width: 400px;
-  height: 300px;
   border: 2px black solid;
   padding-left: 10px;
   font-size: 10px;
+  right: 10px;
+  width: 400px;
+  height: 300px;
+  pointer-events: none;
+}
+
+#tooltip {
+  bottom: 10px
 }
 
 #statements {
-  background: white;
-  opacity: 0;
-  transition: opacity .5s;
-  position: fixed;
-  right: 10px;
   top: 10px;
-  width: 400px;
-  height: 500px;
-  border: 2px black solid;
-  padding-left: 10px;
-  font-size: 10px;
+}
+
+
+#viz-container, #top-bar, #loading {
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+#top-bar {
+  padding-left: 20px;
+  background: white;
+  box-shadow: 0px 10px 10px white;
 }
 
 #loading {
-  margin: 50px;
+  text-align: center;
+  margin-top: 250px;
   font-size: 30px;
 }

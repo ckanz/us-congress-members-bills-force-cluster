@@ -44,7 +44,7 @@ const getMembers = (callback) => {
         member.type = 'senate';
       });
       enrichMembersData(membersArray, enrichedMembersArray => {
-	callback(enrichedMembersArray);
+	      callback(enrichedMembersArray);
       });
     });
   });
