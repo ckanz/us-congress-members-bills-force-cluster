@@ -11,7 +11,7 @@ const myZoom = zoom()
       select('#cluster').attr('transform', elements[i].__zoom);
     }
   })
-  .scaleExtent([0.5, 5]);
+  .scaleExtent([0.5, 10]);
 
 getMembers(data => {
   console.log(data);

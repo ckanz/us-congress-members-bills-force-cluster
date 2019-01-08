@@ -8,7 +8,13 @@ body {
   justify-content: center;
   align-items: center;
   cursor: default;
-} 
+}
+
+.leaf-circle, .cluster-node:hover {
+  fill: white;
+  stroke: black;
+  stroke-width: 1px;
+}
 
 .top-fixed {
   width: 100%;

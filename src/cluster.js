@@ -1,4 +1,4 @@
-import { select } from 'd3-selection';
+import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceCollide, forceManyBody, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
@@ -24,16 +24,46 @@ const getForce = (nodeData, clusterElement) => {
   return myForce;
 };
 
+const addLeafCircle = (node, x, y, r) => {
+  node
+    .insert('circle', 'circle')
+    .attr('class', 'leaf-circle')
+    .attr('vector-effect', 'non-scaling-stroke')
+    .attr('r', 0)
+    .attr('cx', 0)
+    .attr('cy', 0)
+    .transition()
+    .attr('cx', x)
+    .attr('cy', y)
+    .attr('r', r);
+}
+
+const addLeaves = (node, d) => {
+  const radius = d.radius;
+  addLeafCircle(node, 0, -(radius + (radius / 3.5)), radius / 4);
+  addLeafCircle(node, 0, radius + (radius / 3.5), radius / 4);
+
+  addLeafCircle(node, radius / 1.5, -(radius + (radius / 8)), radius / 4);
+  addLeafCircle(node, radius / 1.5, radius + (radius / 8), radius / 4);
+
+  addLeafCircle(node, -(radius / 1.5), -(radius + (radius / 8)), radius / 4);
+  addLeafCircle(node, -(radius / 1.5), radius + (radius / 8), radius / 4);
+}
+
 const enterNode = (d, i, e) => {
-  const innerText = select(e[i]).select('.node-text');
+  const node = select(e[i]);
+  node.raise();
+  addLeaves(node, d);
+
+  const innerText = node.select('.node-text');
   innerText
     .transition()
     .style('opacity', 0)
     .on('end', () => {
+      const radius = d.radius;
       innerText
-        .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 6}px; line-height:${d.radius / 4}px;`)
+        .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 6}px; line-height:${radius / 4}px;`)
         .text('');
-
       innerText
         .append('div')
         .text(`Party: ${d.raw.party}`)
@@ -61,15 +91,17 @@ const enterNode = (d, i, e) => {
   */
 };
 
-const exitNode = (d, i, e) => {
-  const innerText = select(e[i]).select('.node-text');
+const exitNode = ({ radius, text }, i, e) => {
+  const node = select(e[i]);
+  selectAll('.leaf-circle').remove();
+  const innerText = node.select('.node-text');
     innerText
       .transition()
       .style('opacity', 0)
       .on('end', () => {
         innerText
-          .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
-          .text(d.text)
+          .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 4}px;`)
+          .text(text)
           .transition()
           .style('opacity', 1);
       });
@@ -89,6 +121,7 @@ const renderCircles = clusterData => {
 
   myNodes
     .append('circle')
+    .attr('vector-effect', 'non-scaling-stroke')
     .attr('cx', 0)
     .attr('cy', 0)
     .attr('r', d => d.radius)
