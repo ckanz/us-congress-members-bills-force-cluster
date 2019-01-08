@@ -18,25 +18,6 @@ const myZoom = zoom()
   })
   .scaleExtent([0.5, 5]);
 
-const myInnerArc = arc()
-  .innerRadius(d => d.radius - d.radius * 0.25)
-  .outerRadius(d => d.radius - d.radius * 0.17)
-  .cornerRadius(12)
-  .startAngle(0)
-  .endAngle(d => {
-    const angle = d.raw.detail.roles[0].missed_votes_pct / 100;
-    return (angle * Math.PI * 2);
-  });
-
-const getRadialBarForQuarter = (quarter, scale) => {
-  const radialBarChart = arc()
-    .innerRadius(d => d.radius)
-    .outerRadius(d => d.radius + scale(d.radialBars[quarter - 1]))
-    .startAngle(d => ((quarter - 1) / 4) * (Math.PI * 2))
-    .endAngle(d => (quarter / 4) * (Math.PI * 2));
-  return radialBarChart;
-}
-
 const getScale = data => {
   const maxValue = max(data.map(d => d.seniority));
   const minValue = min(data.map(d => d.seniority));
@@ -122,6 +103,13 @@ const renderCircles = (clusterData, radialBarScale) => {
             .transition()
             .style('opacity', 1);
         });
+        /*
+        <a href="${d.raw.times_topics_url}" target="_blank">Times Topics |</a>
+        <a href="https://twitter.com/${d.raw.twitter_id}" target="_blank">Twitter Account |</a>
+        <a href="https://facebook.com/${d.raw.facebook_account}" target="_blank">Facebook Account |</a>
+        <a href="https://youtube.com/${d.raw.youtube_id}" target="_blank">Youtube Account |</a>
+        <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
+        */
       })
       .on('mouseleave', (d, i, e) => {
         const innerText = select(e[i]).select('.node-text');
@@ -137,36 +125,6 @@ const renderCircles = (clusterData, radialBarScale) => {
           });
     });
 
-  /*
-  myNodes
-    .on('click', (d, i, e) => {
-      const tooltip = select('#tooltip');
-      tooltip
-        .style('opacity', 0.9);
-      // TODO: create a nice, styled component for this and extract data from record nicer
-      tooltip.node().innerHTML = `<div>
-        <h3>Details:</h3>
-        <p>Name: ${d.raw.name}</p>
-        <p>Party: ${d.raw.party}</p>
-        <p>Role: ${d.raw.role}</p>
-        <p>Gender: ${d.raw.gender}</p>
-        <p>Seniority: ${d.raw.seniority}</p>
-        <p>Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%</p>
-        <p>Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%</p>
-        <p>Bills sponsored: ${d.raw.detail.roles[0].bills_sponsored}</p>
-        <p>Bills co-sponsored: ${d.raw.detail.roles[0].bills_cosponsored}</p>
-        <p>Contact Form: <a href="${d.raw.detail.roles[0].contact_form}" target="_blank">Link to Form</a></p>
-        <p>Phone: ${d.raw.detail.roles[0].phone}</p>
-        <hr />
-        <a href="${d.raw.times_topics_url}" target="_blank">Times Topics |</a>
-        <a href="https://twitter.com/${d.raw.twitter_id}" target="_blank">Twitter Account |</a>
-        <a href="https://facebook.com/${d.raw.facebook_account}" target="_blank">Facebook Account |</a>
-        <a href="https://youtube.com/${d.raw.youtube_id}" target="_blank">Youtube Account |</a>
-        <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
-      </div>`;
-    });
-  */
-
   myNodes
     .append('circle')
     .attr('cx', 0)
@@ -174,25 +132,6 @@ const renderCircles = (clusterData, radialBarScale) => {
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
     .style('opacity', d => getVotesWithPartyPct(d));
-
-  /*
-  myNodes
-    .append('path')
-    .attr('d', myInnerArc)
-    .attr('class', 'node-arc')
-    .style('fill', '#671f66');
-  */
-
-  /*
-  const radialBarChartContainer = myNodes.append('g').attr('class', 'radial-bar-chart');
-  for (let i=1; i<=4; i++) {
-    radialBarChartContainer
-      .append('path')
-      .attr('d', getRadialBarForQuarter(i, radialBarScale))
-      .attr('class', 'node-radial-bar-chart')
-      .style('fill', '#a6adbd');
-  }
-  */
 
   myNodes
     .append('foreignObject')
