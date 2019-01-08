@@ -73,6 +73,18 @@ const getForce = (nodeData, clusterElement) => {
   return myForce;
 };
 
+const getVotesWithPartyPct = d => {
+  // TODO: find out why votes_with_party_pct is null on some candidates
+  if (!d || !d.raw || !d.raw.detail || !d.raw.detail.roles) {
+    return 1;
+  }
+  const recentRole = d.raw.detail.roles[0];
+  if (!recentRole || !recentRole.votes_with_party_pct || isNaN(recentRole.votes_with_party_pct)) {
+    return 1;
+  }
+  return recentRole.votes_with_party_pct / 100;
+};
+
 const renderCircles = (clusterData, radialBarScale) => {
   const myNodes = select('#cluster')
     .selectAll('g')
@@ -81,6 +93,7 @@ const renderCircles = (clusterData, radialBarScale) => {
     .append('g')
     .attr('class', 'cluster-node');
 
+  /*
   myNodes
     .on('click', (d, i, e) => {
       const tooltip = select('#tooltip');
@@ -108,6 +121,7 @@ const renderCircles = (clusterData, radialBarScale) => {
         <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
       </div>`;
     });
+  */
 
   myNodes
     .append('circle')
@@ -115,7 +129,7 @@ const renderCircles = (clusterData, radialBarScale) => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    .style('opacity', d => d.raw.detail.roles[0].votes_with_party_pct / 100);
+    .style('opacity', d => getVotesWithPartyPct(d));
 
   /*
   myNodes
@@ -187,7 +201,6 @@ getMembers(data => {
   select('#viz-container')
     .style('height', height)
     .call(myZoom);
-  document.getElementById('loading').innerHTML = '';
 });
 
 // TODO: change radius of cluster nodes to selected metric

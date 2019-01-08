@@ -1,9 +1,5 @@
 body {
-  font-family: Arial,Helvetica,sans-serif
-}
-
-.interaction-bar {
-  cursor: forbidden;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .node-text {
@@ -16,7 +12,6 @@ body {
 .cluster-node {
   stroke: black;
   stroke-width: 2px;
-  cursor: pointer;
 }
 
 .node-arc {
@@ -41,15 +36,6 @@ body {
   pointer-events: none;
 }
 
-#tooltip {
-  bottom: 10px
-}
-
-#statements {
-  top: 10px;
-}
-
-
 #viz-container, #top-bar, #loading {
   width: 100%;
   position: fixed;
@@ -66,5 +52,5 @@ body {
 #loading {
   text-align: center;
   margin-top: 250px;
-  font-size: 30px;
+  font-size: 20px;
 }
