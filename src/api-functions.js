@@ -18,7 +18,7 @@ const enrichMembersData = (memberArray, callback) => {
   memberArray.forEach((member, index) => {
     const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
     getApiData(memberDetailUrl, response => {
-      loadingMessage.innerHTML = `Fetching details of all members (${index + 1}/${memberArray.length}) ...`;
+      loadingMessage.innerHTML = `Fetching details of member ${member.name} (${index + 1}/${memberArray.length}) ...`;
       member.detail = response.results[0];
       if (index === memberArray.length - 1) {
         loadingMessage.style.display = 'none';
@@ -26,7 +26,7 @@ const enrichMembersData = (memberArray, callback) => {
       }
       // const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
       // getApiData(memberVoteUrl, response => {
-      //   loadingMessage.innerHTML = `Fetching votes of all members (${index + 1}/${memberArray.length}) ...`;
+      //   loadingMessage.innerHTML = `Fetching votes of member ${member.name} (${index + 1}/${memberArray.length}) ...`;
       //   member.votes = response.results[0].votes;
       //   if (index === memberArray.length - 1) {
       //     loadingMessage.style.display = 'none';
