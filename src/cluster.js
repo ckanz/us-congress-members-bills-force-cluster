@@ -24,9 +24,16 @@ const getForce = (nodeData, clusterElement) => {
   return myForce;
 };
 
-const addLeafCircle = (node, x, y, r) => {
+const addLeafCircle = (node, x, y, r, url) => {
   node
     .insert('circle', 'circle')
+    .on('click', () => {
+      if (url) {
+        window.open(url);
+      } else {
+        alert('No URL for this page available :-(');
+      }
+    })
     .attr('class', 'leaf-circle')
     .attr('vector-effect', 'non-scaling-stroke')
     .attr('r', r)
@@ -43,14 +50,14 @@ const addLeaves = (node, d) => {
   const centerLeafX = mainRadius + (mainRadius / 3);
   const sideLeafX = mainRadius - leafRadius / 2;
 
-  addLeafCircle(node, 0, -centerLeafX, leafRadius);
-  addLeafCircle(node, 0, centerLeafX, leafRadius);
+  addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${d.raw.youtube_id}`);
+  addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.detail.govtrack_id}`);
 
-  addLeafCircle(node, sideLeafX, -mainRadius, leafRadius);
-  addLeafCircle(node, sideLeafX, mainRadius, leafRadius);
+  addLeafCircle(node, sideLeafX, -mainRadius, leafRadius, `https://twitter.com/${d.raw.twitter_id}`);
+  addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.detail.votesmart_id}`);
 
-  addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius);
-  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius);
+  addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius, `https://facebook.com/${d.raw.facebook_account}`);
+  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.detail.url);
 
   node
     .insert('circle', 'circle')
@@ -110,9 +117,7 @@ const exitNode = ({ radius, text }, i, e) => {
   selectAll('.leaf-circle')
     .transition()
     .attr('r', 0)
-    .on('end', function() {
-      this.remove();
-    });
+    .on('end', function() { this.remove(); });
   selectAll('.hover-circle').remove();
   const innerText = node.select('.node-text');
     innerText
