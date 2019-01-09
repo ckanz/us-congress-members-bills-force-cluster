@@ -35,9 +35,14 @@ const partyVotewArc = arc()
     return ((partyVotesPct / 100) * Math.PI * 1.999);
   });
 
-const addLeafCircle = (node, x, y, r, url) => {
-  node
-    .insert('circle', 'circle')
+const addLeafCircle = (node, x, y, r, url, img) => {
+  const leafCircle = node.insert('g').attr('class', 'leaf-circle');
+
+  // TODO: use icons from file
+  img = 'https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png';
+
+  leafCircle
+    .append('circle')
     .on('click', () => {
       if (url) {
         window.open(url);
@@ -45,14 +50,24 @@ const addLeafCircle = (node, x, y, r, url) => {
         // alert('No URL for this page available :-(');
       }
     })
-    .attr('class', 'leaf-circle')
     .attr('vector-effect', 'non-scaling-stroke')
-    .attr('r', r)
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .transition()
     .attr('cx', x)
-    .attr('cy', y);
+    .attr('cy', y)
+    .attr('r', 0)
+    .transition()
+    .attr('r', r)
+
+    leafCircle
+      .append('image')
+      .attr('x', x - r / 2)
+      .attr('y', y - r / 2)
+      .attr('width', r)
+      .attr('height', r)
+      .attr('xlink:href', img)
+      .style('opacity', 0)
+      .transition()
+      .style('opacity', 1);
+
 }
 
 const addLeaves = (node, d) => {
@@ -129,10 +144,15 @@ const enterNode = (d, i, e) => {
 const exitNode = ({ radius, text }, i, e) => {
   selectAll('.cluster-node').transition().style('opacity', 1);
   const node = select(e[i]);
-  selectAll('.leaf-circle')
+  selectAll('.leaf-circle image')
+    .transition()
+    .style('opacity', 0);
+  selectAll('.leaf-circle circle')
     .transition()
     .attr('r', 0)
-    .on('end', function() { this.remove(); });
+    .on('end', () => {
+      selectAll('.leaf-circle').remove();
+    });
   selectAll('.hover-circle').remove();
   selectAll('.node-arc').remove();
   const innerText = node.select('.node-text');
