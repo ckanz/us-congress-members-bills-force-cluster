@@ -29,25 +29,28 @@ const addLeafCircle = (node, x, y, r) => {
     .insert('circle', 'circle')
     .attr('class', 'leaf-circle')
     .attr('vector-effect', 'non-scaling-stroke')
-    .attr('r', 0)
+    .attr('r', r)
     .attr('cx', 0)
     .attr('cy', 0)
     .transition()
     .attr('cx', x)
-    .attr('cy', y)
-    .attr('r', r);
+    .attr('cy', y);
 }
 
 const addLeaves = (node, d) => {
-  const radius = d.radius;
-  addLeafCircle(node, 0, -(radius + (radius / 3.5)), radius / 4);
-  addLeafCircle(node, 0, radius + (radius / 3.5), radius / 4);
+  const mainRadius = d.radius;
+  const leafRadius = mainRadius / 4;
+  
+  const centerLeafX = mainRadius + (mainRadius / 3);
+  addLeafCircle(node, 0, -centerLeafX, leafRadius);
+  addLeafCircle(node, 0, centerLeafX, leafRadius);
 
-  addLeafCircle(node, radius / 1.5, -(radius + (radius / 8)), radius / 4);
-  addLeafCircle(node, radius / 1.5, radius + (radius / 8), radius / 4);
+  const sideLeafX = mainRadius - leafRadius / 2;
+  addLeafCircle(node, sideLeafX, -mainRadius, leafRadius);
+  addLeafCircle(node, sideLeafX, mainRadius, leafRadius);
 
-  addLeafCircle(node, -(radius / 1.5), -(radius + (radius / 8)), radius / 4);
-  addLeafCircle(node, -(radius / 1.5), radius + (radius / 8), radius / 4);
+  addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius);
+  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius);
 }
 
 const enterNode = (d, i, e) => {
