@@ -9,18 +9,9 @@ const getForce = (nodeData, clusterElement) => {
     .force('collide', forceCollide(d => d.radius * 1.2).strength(.1));
 
   const layoutTick = () => {
-    clusterElement
-    .attr('transform', d => {
-      const topBoundary = d.radius;
-      if (d.y < topBoundary) {
-        d.y = topBoundary;
-      }
-      return `translate(${d.x},${d.y})`;
-    });
+    clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
   };
-  myForce.nodes(nodeData)
-    .on('tick', layoutTick);
-
+  myForce.nodes(nodeData).on('tick', layoutTick);
   return myForce;
 };
 
@@ -98,7 +89,7 @@ const enterNode = (d, i, e) => {
     .append('path')
     .attr('d', attendedVotewArc)
     .attr('class', 'node-arc')
-    .style('fill', '#671f66');
+    .style('fill', 'orange');
 
   node
     .append('path')
