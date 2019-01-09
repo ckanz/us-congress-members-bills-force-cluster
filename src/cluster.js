@@ -1,12 +1,12 @@
 import { select, selectAll } from 'd3-selection';
-import { forceSimulation, forceCollide, forceManyBody, forceCenter } from 'd3-force';
+import { arc } from 'd3-shape';
+import { forceSimulation, forceCollide, forceManyBody } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
 const getForce = (nodeData, clusterElement) => {
   const myForce = forceSimulation()
     .force('charge', forceManyBody().strength(0.2))
-    .force('collide', forceCollide(d => d.radius * 1.2).strength(.3))
-    // .force('center', forceCenter(width / 2, height / 2));
+    .force('collide', forceCollide(d => d.radius * 1.2).strength(.1));
 
   const layoutTick = () => {
     clusterElement
@@ -24,6 +24,26 @@ const getForce = (nodeData, clusterElement) => {
   return myForce;
 };
 
+const attendedVotewArc = arc()
+  .innerRadius(d => d.radius - (d.radius * .05))
+  .outerRadius(d => d.radius)
+  .cornerRadius(12)
+  .startAngle(0)
+  .endAngle(d => {
+    const attendedVotesPct = d.raw.detail && d.raw.detail.roles ? (100 - d.raw.detail.roles[0].missed_votes_pct) : 0;
+    return (attendedVotesPct / 100) * Math.PI * 1.999;
+  });
+
+const partyVotewArc = arc()
+  .innerRadius(d => d.radius)
+  .outerRadius(d => d.radius + (d.radius * .05))
+  .cornerRadius(12)
+  .startAngle(0)
+  .endAngle(d => {
+    const partyVotesPct = d.raw.detail && d.raw.detail.roles ? d.raw.detail.roles[0].votes_with_party_pct : 0;
+    return ((partyVotesPct / 100) * Math.PI * 1.999);
+  });
+
 const addLeafCircle = (node, x, y, r, url) => {
   node
     .insert('circle', 'circle')
@@ -31,7 +51,7 @@ const addLeafCircle = (node, x, y, r, url) => {
       if (url) {
         window.open(url);
       } else {
-        alert('No URL for this page available :-(');
+        // alert('No URL for this page available :-(');
       }
     })
     .attr('class', 'leaf-circle')
@@ -74,6 +94,17 @@ const enterNode = (d, i, e) => {
   node.raise();
   node.transition().style('opacity', 1);
   addLeaves(node, d);
+  node
+    .append('path')
+    .attr('d', attendedVotewArc)
+    .attr('class', 'node-arc')
+    .style('fill', '#671f66');
+
+  node
+    .append('path')
+    .attr('d', partyVotewArc)
+    .attr('class', 'node-arc')
+    .style('fill', 'green');
 
   const innerText = node.select('.node-text');
   innerText
@@ -89,26 +120,19 @@ const enterNode = (d, i, e) => {
         .text(`Party: ${d.raw.party}`)
         .append('div')
         .text(`Gender: ${d.raw.gender}`)
-        .append('div')
-        .text(`Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%`)
+        // .append('div')
+        // .text(`Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%`)
         .append('div')
         .text(`Bills (co-)sponsored: ${d.raw.detail.roles[0].bills_sponsored + d.raw.detail.roles[0].bills_cosponsored}`)
         .append('div')
         .text(`Role: ${d.raw.role}`)
-        .append('div')
-        .text(`Seniority: ${d.raw.seniority}`)
-        .append('div')
-        .text(`Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%`)
+        // .append('div')
+        // .text(`Seniority: ${d.raw.seniority}`)
+        // .append('div')
+        // .text(`Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%`)
         .transition()
         .style('opacity', 1);
     });
-  /*
-  <a href="${d.raw.times_topics_url}" target="_blank">Times Topics |</a>
-  <a href="https://twitter.com/${d.raw.twitter_id}" target="_blank">Twitter Account |</a>
-  <a href="https://facebook.com/${d.raw.facebook_account}" target="_blank">Facebook Account |</a>
-  <a href="https://youtube.com/${d.raw.youtube_id}" target="_blank">Youtube Account |</a>
-  <a href="${d.raw.detail.rss_url}" target="_blank">RSS Feeed |</a>
-  */
 };
 
 const exitNode = ({ radius, text }, i, e) => {
@@ -119,6 +143,7 @@ const exitNode = ({ radius, text }, i, e) => {
     .attr('r', 0)
     .on('end', function() { this.remove(); });
   selectAll('.hover-circle').remove();
+  selectAll('.node-arc').remove();
   const innerText = node.select('.node-text');
     innerText
       .transition()
