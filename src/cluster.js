@@ -40,22 +40,32 @@ const addLeafCircle = (node, x, y, r) => {
 const addLeaves = (node, d) => {
   const mainRadius = d.radius;
   const leafRadius = mainRadius / 4;
-  
   const centerLeafX = mainRadius + (mainRadius / 3);
+  const sideLeafX = mainRadius - leafRadius / 2;
+
   addLeafCircle(node, 0, -centerLeafX, leafRadius);
   addLeafCircle(node, 0, centerLeafX, leafRadius);
 
-  const sideLeafX = mainRadius - leafRadius / 2;
   addLeafCircle(node, sideLeafX, -mainRadius, leafRadius);
   addLeafCircle(node, sideLeafX, mainRadius, leafRadius);
 
   addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius);
   addLeafCircle(node, -sideLeafX, mainRadius, leafRadius);
-}
+
+  node
+    .insert('circle', 'circle')
+    .attr('class', 'hover-circle')
+    .style('opacity', 0)
+    .attr('r', centerLeafX + leafRadius)
+    .attr('cx', 0)
+    .attr('cy', 0);
+};
 
 const enterNode = (d, i, e) => {
+  selectAll('.cluster-node').transition().style('opacity', 0.3);
   const node = select(e[i]);
   node.raise();
+  node.transition().style('opacity', 1);
   addLeaves(node, d);
 
   const innerText = node.select('.node-text');
@@ -95,8 +105,15 @@ const enterNode = (d, i, e) => {
 };
 
 const exitNode = ({ radius, text }, i, e) => {
+  selectAll('.cluster-node').transition().style('opacity', 1);
   const node = select(e[i]);
-  selectAll('.leaf-circle').remove();
+  selectAll('.leaf-circle')
+    .transition()
+    .attr('r', 0)
+    .on('end', function() {
+      this.remove();
+    });
+  selectAll('.hover-circle').remove();
   const innerText = node.select('.node-text');
     innerText
       .transition()
@@ -124,6 +141,7 @@ const renderCircles = clusterData => {
 
   myNodes
     .append('circle')
+    .attr('class', 'cluster-circle')
     .attr('vector-effect', 'non-scaling-stroke')
     .attr('cx', 0)
     .attr('cy', 0)
@@ -133,6 +151,7 @@ const renderCircles = clusterData => {
 
   myNodes
     .append('foreignObject')
+    .style('pointer-events', 'none')
     .attr('x', d => -d.radius)
     .attr('y', d => -d.radius)
     .attr('width', d => d.radius * 2)

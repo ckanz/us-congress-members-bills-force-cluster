@@ -10,10 +10,11 @@ body {
   cursor: default;
 }
 
-.leaf-circle, .cluster-node:hover {
-  fill: white;
+.leaf-circle {
+  fill: lightgrey;
   stroke: black;
   stroke-width: 1px;
+  cursor: pointer;
 }
 
 .top-fixed {
