@@ -47,7 +47,8 @@ const addLeafCircle = (node, x, y, r, url, img) => {
       if (url) {
         window.open(url);
       } else {
-        // alert('No URL for this page available :-(');
+        console.log('No URL for this page available :-(');
+        console.log(url);
       }
     })
     .attr('vector-effect', 'non-scaling-stroke')
@@ -59,6 +60,7 @@ const addLeafCircle = (node, x, y, r, url, img) => {
 
     leafCircle
       .append('image')
+      .attr('class', 'leaf-circle-icon')
       .attr('x', x - r / 2)
       .attr('y', y - r / 2)
       .attr('width', r)
@@ -66,7 +68,8 @@ const addLeafCircle = (node, x, y, r, url, img) => {
       .attr('xlink:href', img)
       .style('opacity', 0)
       .transition()
-      .style('opacity', 1);
+      .style('opacity', 1)
+      .style('pointer-events', 'none');
 
 }
 
@@ -144,28 +147,27 @@ const enterNode = (d, i, e) => {
 const exitNode = ({ radius, text }, i, e) => {
   selectAll('.cluster-node').transition().style('opacity', 1);
   const node = select(e[i]);
-  selectAll('.leaf-circle image')
+  node.selectAll('.leaf-circle image')
     .transition()
     .style('opacity', 0);
-  selectAll('.leaf-circle circle')
+  node.selectAll('.leaf-circle circle')
     .transition()
     .attr('r', 0)
     .on('end', () => {
-      selectAll('.leaf-circle').remove();
+      node.selectAll('.leaf-circle').remove();
     });
-  selectAll('.hover-circle').remove();
-  selectAll('.node-arc').remove();
-  const innerText = node.select('.node-text');
-    innerText
-      .transition()
-      .style('opacity', 0)
-      .on('end', () => {
-        innerText
-          .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 4}px;`)
-          .text(text)
-          .transition()
-          .style('opacity', 1);
-      });
+  node.selectAll('.hover-circle').remove();
+  node.selectAll('.node-arc').remove();
+  node.select('.node-text')
+    .transition()
+    .style('opacity', 0)
+    .on('end', (d, i, e) => {
+      select(e[i])
+        .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 4}px;`)
+        .text(text)
+        .transition()
+        .style('opacity', 1);
+    });
 };
 
 const renderCircles = clusterData => {
