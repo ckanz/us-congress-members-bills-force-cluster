@@ -16,8 +16,8 @@ const getForce = (nodeData, clusterElement) => {
 };
 
 const attendedVotewArc = arc()
-  .innerRadius(d => d.radius - (d.radius * .05))
-  .outerRadius(d => d.radius)
+  .innerRadius(d => d.radius - (d.radius * .1))
+  .outerRadius(d => d.radius - (d.radius * .05))
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
@@ -26,8 +26,8 @@ const attendedVotewArc = arc()
   });
 
 const partyVotewArc = arc()
-  .innerRadius(d => d.radius)
-  .outerRadius(d => d.radius + (d.radius * .05))
+  .innerRadius(d => d.radius - (d.radius * .15))
+  .outerRadius(d => d.radius - (d.radius * .2))
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
@@ -103,17 +103,21 @@ const enterNode = (d, i, e) => {
   node.raise();
   node.transition().style('opacity', 1);
   addLeaves(node, d);
+
+  /*
   node
     .append('path')
     .attr('d', attendedVotewArc)
     .attr('class', 'node-arc')
-    .style('fill', 'orange');
+    .style('opacity', 0.5)
+    .style('fill', 'black');
 
   node
     .append('path')
     .attr('d', partyVotewArc)
     .attr('class', 'node-arc')
-    .style('fill', 'green');
+    .style('opacity', 0.5)
+    .style('fill', 'white');
 
   const innerText = node.select('.node-text');
   innerText
@@ -142,6 +146,7 @@ const enterNode = (d, i, e) => {
         .transition()
         .style('opacity', 1);
     });
+    */
 };
 
 const exitNode = ({ radius, text }, i, e) => {
@@ -157,6 +162,8 @@ const exitNode = ({ radius, text }, i, e) => {
       node.selectAll('.leaf-circle').remove();
     });
   node.selectAll('.hover-circle').remove();
+
+  /*
   node.selectAll('.node-arc').remove();
   node.select('.node-text')
     .transition()
@@ -168,6 +175,7 @@ const exitNode = ({ radius, text }, i, e) => {
         .transition()
         .style('opacity', 1);
     });
+  */
 };
 
 const renderCircles = clusterData => {
@@ -177,7 +185,7 @@ const renderCircles = clusterData => {
     .enter()
     .append('g')
     .attr('class', 'cluster-node');
-  
+
   myNodes
     .on('mouseenter', enterNode)
     .on('mouseleave', exitNode);
@@ -203,6 +211,20 @@ const renderCircles = clusterData => {
     .attr('class', 'node-text')
     .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
     .text(d => d.text);
+
+  myNodes
+    .append('path')
+    .attr('d', attendedVotewArc)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'black');
+
+  myNodes
+    .append('path')
+    .attr('d', partyVotewArc)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'white');
 
   return myNodes;
 }
