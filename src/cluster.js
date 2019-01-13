@@ -1,17 +1,19 @@
 import { select, selectAll } from 'd3-selection';
 import { arc } from 'd3-shape';
-import { forceSimulation, forceCollide, forceManyBody } from 'd3-force';
+import { forceSimulation, forceCollide, forceManyBody, forceLink } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
-const getForce = (nodeData, clusterElement) => {
+const getForce = (nodeData, linkData, clusterElement) => {
   const myForce = forceSimulation()
-    .force('charge', forceManyBody().strength(0.2))
-    .force('collide', forceCollide(d => d.radius * 1.2).strength(.1));
+    .force('link', forceLink().id(d => d.id))
+    // .force('charge', forceManyBody().strength(0.01))
+    .force('collide', forceCollide(d => d.radius * 1.2).strength(0.1));
 
   const layoutTick = () => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
+  myForce.force('link').links(linkData);
   return myForce;
 };
 
@@ -80,13 +82,14 @@ const addLeaves = (node, d) => {
   const sideLeafX = mainRadius - leafRadius / 2;
 
   addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${d.raw.youtube_id}`);
-  addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.detail.govtrack_id}`);
-
   addLeafCircle(node, sideLeafX, -mainRadius, leafRadius, `https://twitter.com/${d.raw.twitter_id}`);
-  addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.detail.votesmart_id}`);
-
   addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius, `https://facebook.com/${d.raw.facebook_account}`);
-  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.detail.url);
+
+  if (d.raw.detail) {
+    addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.detail.url);
+    addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.detail.votesmart_id}`);
+    addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.detail.govtrack_id}`);
+  }
 
   node
     .insert('circle', 'circle')
@@ -203,9 +206,9 @@ const renderCircles = clusterData => {
   myNodes
     .append('foreignObject')
     .style('pointer-events', 'none')
-    .attr('x', d => -d.radius)
+    .attr('x', d => -d.radius * .75)
     .attr('y', d => -d.radius)
-    .attr('width', d => d.radius * 2)
+    .attr('width', d => d.radius * 1.5)
     .attr('height', d => d.radius * 2)
     .append('xhtml:div')
     .attr('class', 'node-text')

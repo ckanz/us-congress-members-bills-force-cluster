@@ -23,6 +23,7 @@ const createNodeData = (data, width, height) => {
   const scale = getScale(data);
   return data.map(dataPoint => {
     return {
+      id: dataPoint.id,
       x: width / 2,
       y: height / 2,
       radius: scale(dataPoint.seniority),
@@ -33,7 +34,26 @@ const createNodeData = (data, width, height) => {
   });
 };
 
+const createLinkData = data => {
+  let linkData = [];
+  let linkedIds = [];
+  data.forEach(dataRow => {
+    data.forEach(nextRow => {
+      // TODO: find more meaningful connection between nodes
+      if (dataRow.gender === nextRow.gender && dataRow.id != nextRow.id) {
+        linkData.push({
+          source: dataRow.id,
+          target: nextRow.id,
+          value: 1
+        });
+      }
+    })
+  });
+  return linkData;
+};
+
 export {
   createNodeData,
+  createLinkData,
   getVotesWithPartyPct
 };
