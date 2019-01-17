@@ -107,6 +107,8 @@ const enterNode = (d, i, e) => {
   node.transition().style('opacity', 1);
   addLeaves(node, d);
 
+  // TODO: add line, text and legend for arcs on hover
+
   /*
   node
     .append('path')
