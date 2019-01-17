@@ -15,10 +15,10 @@ const myZoom = zoom()
   .scaleExtent([0.5, 10]);
 
 const initVis = data => {
-  const linkData = createLinkData(myLocalData);
   const width = window.innerWidth || 1000;
   const height = window.innerHeight || 500;
   const nodeData = createNodeData(data, width, height);
+  const linkData = createLinkData(data);
   const clusterElement = renderCircles(nodeData);
   getForce(nodeData, linkData, clusterElement);
 

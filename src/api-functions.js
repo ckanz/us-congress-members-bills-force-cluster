@@ -1,4 +1,4 @@
-import { token } from './creds.json';
+// import { token } from './creds.json';
 
 const loadingMessage = document.getElementById('loading');
 
@@ -56,7 +56,7 @@ const getMembers = (callback) => {
       });
       // callback(membersArray); loadingMessage.style.display = 'none';
       enrichMembersData(membersArray, enrichedMembersArray => {
-	      callback(enrichedMembersArray);
+        callback(enrichedMembersArray);
       });
     });
   });
