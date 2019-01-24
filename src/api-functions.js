@@ -5,8 +5,6 @@ let callCounter = 0;
 
 const CONGRESS_NUMBER = 116;
 const CONGRESS_TYPE = 'house';
-
-const details = false;
 const votes = true;
 
 const getApiData = (url, callback) => {
@@ -22,35 +20,22 @@ const getApiData = (url, callback) => {
   });
 };
 
-const enrichMembersData = (memberArray, callback) => {
-  if (!details) callback(memberArray); return;
-  memberArray.forEach((member, index) => {
-    const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
-    getApiData(memberDetailUrl, response => {
-      loadingMessage.innerHTML = `Fetching details of member ${member.name} (${index + 1}/${memberArray.length}) ...`;
-      member.detail = response.results[0];
-      if (index === memberArray.length - 1) {
-        callback(memberArray);
-      }
-      // const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
-      // getApiData(memberVoteUrl, response => {
-      //   loadingMessage.innerHTML = `Fetching votes of member ${member.name} (${index + 1}/${memberArray.length}) ...`;
-      //   member.votes = response.results[0].votes;
-      //   if (index === memberArray.length - 1) {
-      //     loadingMessage.style.display = 'none';
-      //     callback(memberArray);
-      //   }
-      // });
-    });
-  });
-};
 const getVotingBehaviour = (memberArray, callback) => {
-  if (!votes) {
+  const url = new URL(window.location);
+  const voteParam = url.searchParams.get("votes"); // H000874 Steny Hoyer
+  let voteMember;
+  if (voteParam) {
+    memberArray.forEach(member => {
+      if(member.first_name === voteParam || member.id === voteParam) {
+	voteMember = member;
+      }
+    });
+  }
+  if (!votes || !voteMember) {
     callback([]);
     return;
   }
-  const voteMember = memberArray[0]; // TODO: do for all or a specified member
-  loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
+  loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.first_name} ...`;
   const links = [];
   memberArray.forEach((member, index) => {
     if (voteMember.id !== member.id) {
@@ -77,14 +62,12 @@ const getMembers = callback => {
   loadingMessage.innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER} Congress ...`;
   getApiData(membersHouse, response => {
     membersArray = membersArray.concat(response.results[0].members);
-    enrichMembersData(membersArray, enrichedMembersArray => {
-      getVotingBehaviour(membersArray, votedLinks => {
-	console.log('Calls made:', callCounter);
-        loadingMessage.style.display = 'none';
-	callback({
-          nodes: enrichedMembersArray,
-          links: votedLinks
-        });
+    getVotingBehaviour(membersArray, votedLinks => {
+      console.log('Calls made:', callCounter);
+      loadingMessage.style.display = 'none';
+      callback({
+	nodes: membersArray,
+	links: votedLinks
       });
     });
   });

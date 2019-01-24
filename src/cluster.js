@@ -5,19 +5,19 @@ import { getVotesWithPartyPct } from './data-processing';
 
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
-    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 3).strength(d => d.value / 500))
-    .force('collide', forceCollide(d => d.radius * 1.5).strength(0.1));
+    .alphaDecay(0.1)
+    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 3).strength(0.1))
+    .force('collide', forceCollide(d => d.radius * 2).strength(0.2));
 
   const layoutTick = () => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
     lineElement
-      .select('line')
-      .filter(d => (d.source && d.target))
+      .filter(d => (d.source && d.target && !isNaN(d.target.x)))
       .style('stroke-width', d => d.value / 20)
-      .attr('x1', d => d.source.x)
-      .attr('x2', d => d.target.x)
-      .attr('y1', d => d.source.y)
-      .attr('y2', d => d.target.y);
+      .attr('x1', d => d.source.x || 0)
+      .attr('x2', d => d.target.x || 0)
+      .attr('y1', d => d.source.y || 0)
+      .attr('y2', d => d.target.y || 0);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
   if (linkData && linkData.length > 0) myForce.force('link').links(linkData);
@@ -30,7 +30,7 @@ const attendedVotewArc = arc()
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
-    const attendedVotesPct = d.raw.missed_votes_pct || 0;
+    const attendedVotesPct = (100 - d.raw.missed_votes_pct) || 0;
     return (attendedVotesPct / 100) * Math.PI * 1.999;
   });
 
@@ -113,50 +113,6 @@ const enterNode = (d, i, e) => {
   addLeaves(node, d);
 
   // TODO: add line, text and legend for arcs on hover
-
-  /*
-  node
-    .append('path')
-    .attr('d', attendedVotewArc)
-    .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'black');
-
-  node
-    .append('path')
-    .attr('d', partyVotewArc)
-    .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'white');
-
-  const innerText = node.select('.node-text');
-  innerText
-    .transition()
-    .style('opacity', 0)
-    .on('end', () => {
-      const radius = d.radius;
-      innerText
-        .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 6}px; line-height:${radius / 4}px;`)
-        .text('');
-      innerText
-        .append('div')
-        .text(`Party: ${d.raw.party}`)
-        .append('div')
-        .text(`Gender: ${d.raw.gender}`)
-        // .append('div')
-        // .text(`Votes with party: ${d.raw.detail.roles[0].votes_with_party_pct}%`)
-        .append('div')
-        .text(`Bills (co-)sponsored: ${d.raw.detail.roles[0].bills_sponsored + d.raw.detail.roles[0].bills_cosponsored}`)
-        .append('div')
-        .text(`Role: ${d.raw.role}`)
-        // .append('div')
-        // .text(`Seniority: ${d.raw.seniority}`)
-        // .append('div')
-        // .text(`Missed Votes: ${d.raw.detail.roles[0].missed_votes_pct}%`)
-        .transition()
-        .style('opacity', 1);
-    });
-    */
 };
 
 const exitNode = ({ radius, text }, i, e) => {
@@ -172,40 +128,27 @@ const exitNode = ({ radius, text }, i, e) => {
       node.selectAll('.leaf-circle').remove();
     });
   node.selectAll('.hover-circle').remove();
-
-  /*
-  node.selectAll('.node-arc').remove();
-  node.select('.node-text')
-    .transition()
-    .style('opacity', 0)
-    .on('end', (d, i, e) => {
-      select(e[i])
-        .attr('style', d => `height: ${radius * 2}px; font-size: ${radius / 4}px;`)
-        .text(text)
-        .transition()
-        .style('opacity', 1);
-    });
-  */
 };
 
 const renderCircles = (clusterData, linkData) => {
   const myLines = select('#viz-container')
     .append('g')
     .attr('id', 'line-container')
-    .selectAll('g')
+    .selectAll('line')
     .data(linkData)
     .enter()
-    .append('g')
+    .append('line')
     .attr('class', 'cluster-line');
 
   myLines
-    .append('line')
-    .attr('class', 'vote-line')
     .attr('x1', 0)
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
     .style('stroke', 'black')
+    .style('opacity', 0)
+    .transition()
+    .delay((d, i) => 2000 + (i * 10))
     .style('opacity', 0.3)
     .style('stroke-width', 3);
 
@@ -215,7 +158,12 @@ const renderCircles = (clusterData, linkData) => {
     .selectAll('g')
     .data(clusterData)
     .enter()
-    .append('g')
+    .append('g');
+
+   myNodes.style('opacity', 0)
+    .transition()
+    .delay((d, i) => i * 10)
+    .style('opacity', 1)
     .attr('class', 'cluster-node');
 
   myNodes
@@ -230,7 +178,7 @@ const renderCircles = (clusterData, linkData) => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    // .style('opacity', d => getVotesWithPartyPct(d));
+    .style('opacity', d => getVotesWithPartyPct(d));
 
   myNodes
     .append('foreignObject')

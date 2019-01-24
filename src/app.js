@@ -22,7 +22,10 @@ const initVis = data => {
   const height = window.innerHeight || 500;
   const nodeData = createNodeData(data.nodes, width, height);
   const { myNodes, myLines } = renderCircles(nodeData, data.links);
-  getForce(nodeData, data.links, myNodes, myLines);
+
+  setTimeout(() => {
+    getForce(nodeData, data.links, myNodes, myLines);
+  }, 2000);
 
   select('svg')
     .style('height', height)
@@ -32,7 +35,7 @@ const initVis = data => {
 if (live) {
   getMembers(data => {
     console.log(data);
-    console.log(JSON.stringify(data));
+    // console.log(JSON.stringify(data));
     initVis(data);
   });
 } else {
