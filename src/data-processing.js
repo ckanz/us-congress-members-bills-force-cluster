@@ -25,7 +25,7 @@ const createNodeData = (data, width, height) => {
     return {
       id: dataPoint.id,
       // TODO: use gravity force for cluster locations instead?
-      x: dataPoint.party === 'D' ? width * 0.25 : width * 0.75,
+      x: width / 2, // dataPoint.party === 'D' ? width * 0.25 : width * 0.75,
       y: height / 2,
       radius: scale(parseInt(dataPoint.seniority)),
       raw: dataPoint,

@@ -3,14 +3,22 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
-const getForce = (nodeData, linkData, clusterElement) => {
+const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
-    .force('link', forceLink().id(d => d.id).strength(d => d.value / 100))
-    .force('charge', forceManyBody().strength(0.01))
-    .force('collide', forceCollide(d => d.radius * 1.2).strength(0.1));
+    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 3).strength(d => d.value / 500))
+    // .force('charge', forceManyBody().strength(0.1))
+    .force('collide', forceCollide(d => d.radius * 1.5).strength(0.1));
+
 
   const layoutTick = () => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
+    lineElement
+      .select('line')
+      .style('stroke-width', d => d.value / 20)
+      .attr('x1', d => d.source.x)
+      .attr('x2', d => d.target.x)
+      .attr('y1', d => d.source.y)
+      .attr('y2', d => d.target.y);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
   myForce.force('link').links(linkData);
@@ -101,7 +109,7 @@ const addLeaves = (node, d) => {
 };
 
 const enterNode = (d, i, e) => {
-  selectAll('.cluster-node').transition().style('opacity', 0.3);
+  // selectAll('.cluster-node').transition().style('opacity', 0.3);
   const node = select(e[i]);
   node.raise();
   node.transition().style('opacity', 1);
@@ -155,7 +163,7 @@ const enterNode = (d, i, e) => {
 };
 
 const exitNode = ({ radius, text }, i, e) => {
-  selectAll('.cluster-node').transition().style('opacity', 1);
+  // selectAll('.cluster-node').transition().style('opacity', 1);
   const node = select(e[i]);
   node.selectAll('.leaf-circle image')
     .transition()
@@ -183,8 +191,30 @@ const exitNode = ({ radius, text }, i, e) => {
   */
 };
 
-const renderCircles = clusterData => {
-  const myNodes = select('#cluster')
+const renderCircles = (clusterData, linkData) => {
+  const myLines = select('#viz-container')
+    .append('g')
+    .attr('id', 'line-container')
+    .selectAll('g')
+    .data(linkData)
+    .enter()
+    .append('g')
+    .attr('class', 'cluster-line');
+
+  myLines
+    .append('line')
+    .attr('class', 'vote-line')
+    .attr('x1', 0)
+    .attr('x2', 0)
+    .attr('y1', 0)
+    .attr('y2', 0)
+    .style('stroke', 'black')
+    .style('opacity', 0.3)
+    .style('stroke-width', 3);
+
+  const myNodes = select('#viz-container')
+    .append('g')
+    .attr('id', 'circle-container')
     .selectAll('g')
     .data(clusterData)
     .enter()
@@ -203,7 +233,7 @@ const renderCircles = clusterData => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    .style('opacity', d => getVotesWithPartyPct(d));
+    // .style('opacity', d => getVotesWithPartyPct(d));
 
   myNodes
     .append('foreignObject')
@@ -231,7 +261,10 @@ const renderCircles = clusterData => {
     .style('opacity', 0.5)
     .style('fill', 'white');
 
-  return myNodes;
+  return {
+    myNodes,
+    myLines
+  };
 }
 
 export {

@@ -12,7 +12,7 @@ const live = false;
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
     if (elements[i] && elements[i].__zoom) {
-      select('#cluster').attr('transform', elements[i].__zoom);
+      select('#viz-container').attr('transform', elements[i].__zoom);
     }
   })
   .scaleExtent([0.5, 10]);
@@ -22,12 +22,13 @@ const initVis = data => {
   const height = window.innerHeight || 500;
   const nodeData = createNodeData(data.nodes, width, height);
   // const linkData = createLinkData(data);
-  const clusterElement = renderCircles(nodeData);
-  getForce(nodeData, data.links, clusterElement);
+  const { myNodes, myLines } = renderCircles(nodeData, data.links);
+  getForce(nodeData, data.links, myNodes, myLines);
 
-  select('#viz-container')
+  select('svg')
     .style('height', height)
     .call(myZoom);
+
 }
 
 if (live) {
