@@ -6,14 +6,13 @@ import { getVotesWithPartyPct } from './data-processing';
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 3).strength(d => d.value / 500))
-    // .force('charge', forceManyBody().strength(0.1))
     .force('collide', forceCollide(d => d.radius * 1.5).strength(0.1));
-
 
   const layoutTick = () => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
     lineElement
       .select('line')
+      .filter(d => (d.source && d.target))
       .style('stroke-width', d => d.value / 20)
       .attr('x1', d => d.source.x)
       .attr('x2', d => d.target.x)
@@ -21,7 +20,8 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
       .attr('y2', d => d.target.y);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
-  myForce.force('link').links(linkData);
+  debugger;
+  if (linkData && linkData.length > 0) myForce.force('link').links(linkData);
   return myForce;
 };
 
@@ -93,11 +93,9 @@ const addLeaves = (node, d) => {
   addLeafCircle(node, sideLeafX, -mainRadius, leafRadius, `https://twitter.com/${d.raw.twitter_id}`);
   addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius, `https://facebook.com/${d.raw.facebook_account}`);
 
-  if (d.raw.detail) {
-    addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.detail.url);
-    addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.detail.votesmart_id}`);
-    addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.detail.govtrack_id}`);
-  }
+  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.url);
+  addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.votesmart_id}`);
+  addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.govtrack_id}`);
 
   node
     .insert('circle', 'circle')

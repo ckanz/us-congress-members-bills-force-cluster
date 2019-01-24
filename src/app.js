@@ -5,7 +5,7 @@ import { renderCircles, getForce } from './cluster';
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 
-const myLocalData = require('./local-data.json');
+const californiaVoting = require('./local-data.json');
 const allMembers = require('./all-members.json');
 const live = false;
 
@@ -21,14 +21,12 @@ const initVis = data => {
   const width = window.innerWidth || 1000;
   const height = window.innerHeight || 500;
   const nodeData = createNodeData(data.nodes, width, height);
-  // const linkData = createLinkData(data);
   const { myNodes, myLines } = renderCircles(nodeData, data.links);
   getForce(nodeData, data.links, myNodes, myLines);
 
   select('svg')
     .style('height', height)
     .call(myZoom);
-
 }
 
 if (live) {
@@ -38,8 +36,8 @@ if (live) {
     initVis(data);
   });
 } else {
-  initVis(myLocalData);
-  console.log(myLocalData);
+  initVis(californiaVoting);
+  console.log(californiaVoting);
 }
 
 // TODO: change radius of cluster nodes to selected metric

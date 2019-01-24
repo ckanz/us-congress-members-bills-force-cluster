@@ -29,7 +29,7 @@ const createNodeData = (data, width, height) => {
       y: height / 2,
       radius: scale(parseInt(dataPoint.seniority)),
       raw: dataPoint,
-      text: dataPoint.name,
+      text: dataPoint.name ? dataPoint.name : `${dataPoint.first_name} ${dataPoint.last_name}`,
       color: dataPoint.party === 'D' ? '#3333FF' : '#E81B23' // TODO: do a better check (in case of other parties, e.g. green?)
     }
   });

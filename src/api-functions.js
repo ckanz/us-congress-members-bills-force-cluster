@@ -45,7 +45,7 @@ const enrichMembersData = (memberArray, callback) => {
   });
 };
 const getVotingBehaviour = (memberArray, callback) => {
-  if (!votes) callback(memberArray); return;
+  if (!votes) callback([]); return;
   const voteMember = memberArray[0]; // TODO: do for all or a specified member
   loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
   const links = [];
@@ -74,7 +74,6 @@ const getMembers = callback => {
   loadingMessage.innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER} Congress ...`;
   getApiData(membersHouse, response => {
     membersArray = membersArray.concat(response.results[0].members);
-    debugger;
     enrichMembersData(membersArray, enrichedMembersArray => {
       getVotingBehaviour(membersArray, votedLinks => {
 	console.log('Calls made:', callCounter);
