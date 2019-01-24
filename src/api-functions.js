@@ -6,6 +6,9 @@ let callCounter = 0;
 const CONGRESS_NUMBER = 116;
 const CONGRESS_TYPE = 'house';
 
+const details = false;
+const votes = false;
+
 const getApiData = (url, callback) => {
   fetch(url,  { headers: {
       'X-API-Key': token
@@ -20,6 +23,7 @@ const getApiData = (url, callback) => {
 };
 
 const enrichMembersData = (memberArray, callback) => {
+  if (!details) callback(memberArray); return;
   memberArray.forEach((member, index) => {
     const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
     getApiData(memberDetailUrl, response => {
@@ -41,6 +45,7 @@ const enrichMembersData = (memberArray, callback) => {
   });
 };
 const getVotingBehaviour = (memberArray, callback) => {
+  if (!votes) callback(memberArray); return;
   const voteMember = memberArray[0]; // TODO: do for all or a specified member
   loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
   const links = [];
@@ -60,13 +65,14 @@ const getVotingBehaviour = (memberArray, callback) => {
   });
 }
 
-const getMembers = (callback) => {
-  const membersHouse = 'https://api.propublica.org/congress/v1/members/house/CA/current.json';
+const getMembers = callback => {
+  const membersHouse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`;
   let membersArray = [];
 
   loadingMessage.innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER} Congress ...`;
   getApiData(membersHouse, response => {
-    membersArray = membersArray.concat(response.results);
+    membersArray = membersArray.concat(response.results[0].members);
+    debugger;
     enrichMembersData(membersArray, enrichedMembersArray => {
       getVotingBehaviour(membersArray, votedLinks => {
 	console.log('Calls made:', callCounter);

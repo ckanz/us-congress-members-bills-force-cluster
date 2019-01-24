@@ -5,6 +5,7 @@ import { renderCircles, getForce } from './cluster';
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 const myLocalData = require('./local-data.json');
+const allMembers = require('./all-members.json');
 
 const live = false;
 
