@@ -7,7 +7,7 @@ const CONGRESS_NUMBER = 116;
 const CONGRESS_TYPE = 'house';
 
 const details = false;
-const votes = false;
+const votes = true;
 
 const getApiData = (url, callback) => {
   fetch(url,  { headers: {
@@ -45,7 +45,10 @@ const enrichMembersData = (memberArray, callback) => {
   });
 };
 const getVotingBehaviour = (memberArray, callback) => {
-  if (!votes) callback([]); return;
+  if (!votes) {
+    callback([]);
+    return;
+  }
   const voteMember = memberArray[0]; // TODO: do for all or a specified member
   loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
   const links = [];

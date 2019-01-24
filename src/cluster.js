@@ -20,7 +20,6 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
       .attr('y2', d => d.target.y);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
-  debugger;
   if (linkData && linkData.length > 0) myForce.force('link').links(linkData);
   return myForce;
 };
@@ -31,7 +30,7 @@ const attendedVotewArc = arc()
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
-    const attendedVotesPct = d.raw.detail && d.raw.detail.roles ? (100 - d.raw.detail.roles[0].missed_votes_pct) : 0;
+    const attendedVotesPct = d.raw.missed_votes_pct || 0;
     return (attendedVotesPct / 100) * Math.PI * 1.999;
   });
 
@@ -41,7 +40,7 @@ const partyVotewArc = arc()
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
-    const partyVotesPct = d.raw.detail && d.raw.detail.roles ? d.raw.detail.roles[0].votes_with_party_pct : 0;
+    const partyVotesPct = d.raw.votes_with_party_pct || 0;
     return ((partyVotesPct / 100) * Math.PI * 1.999);
   });
 

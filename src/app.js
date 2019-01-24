@@ -36,8 +36,8 @@ if (live) {
     initVis(data);
   });
 } else {
-  initVis(californiaVoting);
-  console.log(californiaVoting);
+  initVis(allMembers);
+  console.log(allMembers);
 }
 
 // TODO: change radius of cluster nodes to selected metric
