@@ -50,18 +50,20 @@ const getVotingBehaviour = (memberArray, callback) => {
   loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
   const links = [];
   memberArray.forEach((member, index) => {
-    const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`;
-    getApiData(voteUrl, response => {
-      links.push({
-        source: voteMember.id,
-        target: member.id,
-        value: response.results[0].agree_percent || 0,
-        raw: response.results[0] || {}
+    if (voteMember.id !== member.id) {
+      const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`;
+      getApiData(voteUrl, response => {
+	links.push({
+	  source: voteMember.id,
+	  target: member.id,
+	  value: response.results[0].agree_percent || 0,
+	  raw: response.results[0] || {}
+	});
+	if (index === memberArray.length - 1) {
+	  callback(links);
+	}
       });
-      if (index === memberArray.length - 1) {
-        callback(links);
-      }
-    });
+    }
   });
 }
 

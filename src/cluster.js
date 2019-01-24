@@ -5,7 +5,7 @@ import { getVotesWithPartyPct } from './data-processing';
 
 const getForce = (nodeData, linkData, clusterElement) => {
   const myForce = forceSimulation()
-    // .force('link', forceLink().id(d => d.id).strength(d => d.value / 10000))
+    .force('link', forceLink().id(d => d.id).strength(d => d.value / 100))
     .force('charge', forceManyBody().strength(0.01))
     .force('collide', forceCollide(d => d.radius * 1.2).strength(0.1));
 
@@ -13,7 +13,7 @@ const getForce = (nodeData, linkData, clusterElement) => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
-  // myForce.force('link').links(linkData);
+  myForce.force('link').links(linkData);
   return myForce;
 };
 
