@@ -6,6 +6,8 @@ import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 const myLocalData = require('./local-data.json');
 
+const live = false;
+
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
     if (elements[i] && elements[i].__zoom) {
@@ -17,26 +19,26 @@ const myZoom = zoom()
 const initVis = data => {
   const width = window.innerWidth || 1000;
   const height = window.innerHeight || 500;
-  const nodeData = createNodeData(data, width, height);
-  const linkData = createLinkData(data);
+  const nodeData = createNodeData(data.nodes, width, height);
+  // const linkData = createLinkData(data);
   const clusterElement = renderCircles(nodeData);
-  getForce(nodeData, linkData, clusterElement);
+  getForce(nodeData, data.links, clusterElement);
 
   select('#viz-container')
     .style('height', height)
     .call(myZoom);
 }
 
-
-// live
-// getMembers(data => {
-//   console.log(data);
-//   initVis(data);
-// });
-
-// local
-initVis(myLocalData);
-console.log(myLocalData);
+if (live) {
+  getMembers(data => {
+    console.log(data);
+    console.log(JSON.stringify(data));
+    initVis(data);
+  });
+} else {
+  initVis(myLocalData);
+  console.log(myLocalData);
+}
 
 // TODO: change radius of cluster nodes to selected metric
 document.getElementById('size-dropdown').addEventListener('change', (e) => {

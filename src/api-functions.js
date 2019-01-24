@@ -1,12 +1,17 @@
-// import { token } from './creds.json';
+import { token } from './creds.json';
 
 const loadingMessage = document.getElementById('loading');
+let callCounter = 0;
+
+const CONGRESS_NUMBER = 116;
+const CONGRESS_TYPE = 'house';
 
 const getApiData = (url, callback) => {
   fetch(url,  { headers: {
       'X-API-Key': token
     }}).then(res => {
     res.json().then(data => {
+      callCounter++;
       if (callback) {
         callback(data);
       }
@@ -21,7 +26,6 @@ const enrichMembersData = (memberArray, callback) => {
       loadingMessage.innerHTML = `Fetching details of member ${member.name} (${index + 1}/${memberArray.length}) ...`;
       member.detail = response.results[0];
       if (index === memberArray.length - 1) {
-        loadingMessage.style.display = 'none';
         callback(memberArray);
       }
       // const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
@@ -36,27 +40,41 @@ const enrichMembersData = (memberArray, callback) => {
     });
   });
 };
+const getVotingBehaviour = (memberArray, callback) => {
+  const voteMember = memberArray[0]; // TODO: do for all or a specified member
+  loadingMessage.innerHTML = `Fetching voting relations for ${voteMember.name} ...`;
+  const links = [];
+  memberArray.forEach((member, index) => {
+    const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`;
+    getApiData(voteUrl, response => {
+      links.push({
+        source: voteMember.id,
+        target: member.id,
+        value: response.results[0].agree_percent || 0,
+        raw: response.results[0] || {}
+      });
+      if (index === memberArray.length - 1) {
+        callback(links);
+      }
+    });
+  });
+}
 
 const getMembers = (callback) => {
-  const membersSenate = 'https://api.propublica.org/congress/v1/members/senate/CA/current.json';
   const membersHouse = 'https://api.propublica.org/congress/v1/members/house/CA/current.json';
   let membersArray = [];
 
-  loadingMessage.innerHTML = 'Fetching Senate members ...';
+  loadingMessage.innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER} Congress ...`;
   getApiData(membersHouse, response => {
     membersArray = membersArray.concat(response.results);
-    membersArray.forEach(member => {
-      member.type = 'house';
-    });
-    loadingMessage.innerHTML = 'Fetching House members ...';
-    getApiData(membersSenate, response => {
-      membersArray = membersArray.concat(response.results);
-      membersArray.forEach(member => {
-        member.type = 'senate';
-      });
-      // callback(membersArray); loadingMessage.style.display = 'none';
-      enrichMembersData(membersArray, enrichedMembersArray => {
-        callback(enrichedMembersArray);
+    enrichMembersData(membersArray, enrichedMembersArray => {
+      getVotingBehaviour(membersArray, votedLinks => {
+	console.log('Calls made:', callCounter);
+        loadingMessage.style.display = 'none';
+	callback({
+          nodes: enrichedMembersArray,
+          links: votedLinks
+        });
       });
     });
   });

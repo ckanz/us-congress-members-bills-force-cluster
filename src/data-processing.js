@@ -4,7 +4,6 @@ import { max, min } from 'd3-array';
 const getScale = data => {
   const maxValue = max(data.map(d => parseInt(d.seniority)));
   const minValue = min(data.map(d => parseInt(d.seniority)));
-  debugger;
   return scaleLinear().range([8, 20]).domain([minValue, maxValue]); // TODO: make range dynamic to screen size
 };
 
