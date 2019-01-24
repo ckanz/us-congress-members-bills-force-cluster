@@ -2,8 +2,9 @@ import { scaleLinear } from 'd3-scale';
 import { max, min } from 'd3-array';
 
 const getScale = data => {
-  const maxValue = max(data.map(d => d.seniority));
-  const minValue = min(data.map(d => d.seniority));
+  const maxValue = max(data.map(d => parseInt(d.seniority)));
+  const minValue = min(data.map(d => parseInt(d.seniority)));
+  debugger;
   return scaleLinear().range([8, 20]).domain([minValue, maxValue]); // TODO: make range dynamic to screen size
 };
 
@@ -27,7 +28,7 @@ const createNodeData = (data, width, height) => {
       // TODO: use gravity force for cluster locations instead?
       x: dataPoint.party === 'D' ? width * 0.25 : width * 0.75,
       y: height / 2,
-      radius: scale(dataPoint.seniority),
+      radius: scale(parseInt(dataPoint.seniority)),
       raw: dataPoint,
       text: dataPoint.name,
       color: dataPoint.party === 'D' ? '#3333FF' : '#E81B23' // TODO: do a better check (in case of other parties, e.g. green?)
