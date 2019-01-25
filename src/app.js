@@ -27,15 +27,13 @@ const initVis = data => {
     getForce(nodeData, data.links, myNodes, myLines);
   }, 2000);
 
-  select('svg')
-    .style('height', height)
-    .call(myZoom);
+  select('svg').style('height', height).call(myZoom);
 }
 
 if (live) {
   getMembers(data => {
     console.log(data);
-    // console.log(JSON.stringify(data));
+    console.log(JSON.stringify(data));
     initVis(data);
   });
 } else {

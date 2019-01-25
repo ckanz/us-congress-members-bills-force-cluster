@@ -1,19 +1,19 @@
 import { select, selectAll } from 'd3-selection';
 import { arc } from 'd3-shape';
-import { forceSimulation, forceCollide, forceManyBody, forceLink } from 'd3-force';
+import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
-    .alphaDecay(0.1)
-    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 3).strength(0.1))
-    .force('collide', forceCollide(d => d.radius * 2).strength(0.2));
+    .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
+    .force("charge", forceManyBody().strength(0.1))
+    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
+    .force('collide', forceCollide(d => d.radius * 2).strength(0.1));
 
   const layoutTick = () => {
     clusterElement.attr('transform', d => `translate(${d.x},${d.y})`);
     lineElement
       .filter(d => (d.source && d.target && !isNaN(d.target.x)))
-      .style('stroke-width', d => d.value / 20)
       .attr('x1', d => d.source.x || 0)
       .attr('x2', d => d.target.x || 0)
       .attr('y1', d => d.source.y || 0)
@@ -148,9 +148,9 @@ const renderCircles = (clusterData, linkData) => {
     .style('stroke', 'black')
     .style('opacity', 0)
     .transition()
-    .delay((d, i) => 2000 + (i * 10))
-    .style('opacity', 0.3)
-    .style('stroke-width', 3);
+    .delay((d, i) => 3000 + (i * 3))
+    .style('opacity', d => d.value / 100)
+    .style('stroke-width', 0.5);
 
   const myNodes = select('#viz-container')
     .append('g')
