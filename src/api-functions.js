@@ -1,86 +1,87 @@
-import { token } from './creds.json';
+import { token } from './creds.json'
 
-const loadingMessage = document.getElementsByClassName('loading');
-let callCounter = 0;
+const loadingMessage = document.getElementsByClassName('loading')
+let callCounter = 0
 
-const CONGRESS_NUMBER = 116;
-const CONGRESS_TYPE = 'senate';
-const MAX_VOTE_MEMBER_COUNT = 50;
-const votes = true;
+const CONGRESS_NUMBER = 116
+const CONGRESS_TYPE = 'senate'
+const MAX_VOTE_MEMBER_COUNT = 50
+const votes = true
 
 const getApiData = (url, callback) => {
-  fetch(url,  { headers: {
-      'X-API-Key': token
-    }}).then(res => {
+  fetch(url, { headers: {
+    'X-API-Key': token
+  } }).then(res => {
     res.json().then(data => {
-      callCounter++;
+      callCounter++
       if (callback) {
-        callback(data);
+        callback(data)
       }
-    });
-  });
-};
+    })
+  })
+}
 
-const getFullName = member => `${member.first_name} ${member.last_name}`;
+const getFullName = member => `${member.first_name} ${member.last_name}`
 
 const getVotingBehaviour = (memberArray, callback) => {
-  const url = new URL(window.location);
-  const voteParam = url.searchParams.get("votes"); // H000874 Steny Hoyer
-  let voteMember;
+  const url = new URL(window.location)
+  const voteParam = url.searchParams.get('votes') // H000874 Steny Hoyer
+  // TODO: replace the below with Array.prototype.find()
+  let voteMember
   if (voteParam) {
     memberArray.forEach(member => {
       if (member.first_name === voteParam || member.id === voteParam) {
-        voteMember = member;
+        voteMember = member
       }
-    });
+    })
   }
   if (!votes || !voteMember) {
-    callback([]);
-    return;
+    callback([])
+    return
   }
-  loadingMessage[0].innerHTML = `Fetching voting relations for ${getFullName(voteMember)} ...`;
-  const links = [];
-  let results = 0;
-  memberArray = memberArray.slice(0, MAX_VOTE_MEMBER_COUNT);
+  loadingMessage[0].innerHTML = `Fetching voting relations for ${getFullName(voteMember)} ...`
+  const links = []
+  let results = 0
+  memberArray = memberArray.slice(0, MAX_VOTE_MEMBER_COUNT)
   memberArray.forEach(member => {
     if (voteMember.id !== member.id) {
-      const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`;
+      const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`
       getApiData(voteUrl, response => {
-        results++;
+        results++
         links.push({
           source: voteMember.id,
           target: member.id,
           value: response.results[0].agree_percent || 0,
           raw: response.results[0] || {}
-        });
-        loadingMessage[0].innerHTML = `Fetching voting relations between ${getFullName(voteMember)} and ${getFullName(member)}`;
-        loadingMessage[1].innerHTML = `${results} / ${memberArray.length} (${Math.floor((results / memberArray.length) * 100)}%)`;
+        })
+        loadingMessage[0].innerHTML = `Fetching voting relations between ${getFullName(voteMember)} and ${getFullName(member)}`
+        loadingMessage[1].innerHTML = `${results} / ${memberArray.length} (${Math.floor((results / memberArray.length) * 100)}%)`
         if (results === memberArray.length - 1) {
-          callback(links);
+          callback(links)
         }
-      });
+      })
     }
-  });
+  })
 }
 
 const getMembers = callback => {
-  const membersHouse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`;
-  let membersArray = [];
+  const membersHouse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
+  let membersArray = []
 
-  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}. Congress ...`;
+  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}. Congress ...`
   getApiData(membersHouse, response => {
-    membersArray = membersArray.concat(response.results[0].members);
+    membersArray = membersArray.concat(response.results[0].members)
     getVotingBehaviour(membersArray, votedLinks => {
-      console.log('Calls made:', callCounter);
-      loadingMessage[0].style.display = 'none';
-      loadingMessage[1].style.display = 'none';
+      console.log('Calls made:', callCounter)
+      loadingMessage[0].style.display = 'none'
+      loadingMessage[1].style.display = 'none'
       callback({
-	nodes: membersArray,
-	links: votedLinks
-      });
-    });
-  });
-};
+        nodes: membersArray,
+        links: votedLinks
+      })
+    })
+  })
+}
 
 export {
   getMembers
