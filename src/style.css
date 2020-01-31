@@ -1,9 +1,5 @@
 body {
-  font-family: Arial,Helvetica,sans-serif
-}
-
-.interaction-bar {
-  cursor: forbidden;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .node-text {
@@ -11,51 +7,32 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: default;
 }
 
-.cluster-node {
+.leaf-circle {
+  fill: lightgrey;
   stroke: black;
-  stroke-width: 2px;
+  stroke-width: 1px;
   cursor: pointer;
 }
 
-.node-arc {
-  stroke-width: 0px;
-}
-
-.node-radial-bar-chart {
-  stroke-width: 0.5px;
-}
-
-#tooltip {
-  background: white;
-  opacity: 0;
-  transition: opacity .5s;
+.top-fixed {
+  width: 100%;
   position: fixed;
-  right: 10px;
-  bottom: 10px;
-  width: 400px;
-  height: 300px;
-  border: 2px black solid;
-  padding-left: 10px;
-  font-size: 10px;
+  top: 0px;
+  left: 0px;
 }
 
-#statements {
+#top-bar {
+  padding-left: 20px;
   background: white;
-  opacity: 0;
-  transition: opacity .5s;
-  position: fixed;
-  right: 10px;
-  top: 10px;
-  width: 400px;
-  height: 500px;
-  border: 2px black solid;
-  padding-left: 10px;
-  font-size: 10px;
+  box-shadow: 0px 1px 10px white;
+  border-bottom: 1px solid black;
 }
 
 #loading {
-  margin: 50px;
-  font-size: 30px;
+  text-align: center;
+  margin-top: 250px;
+  font-size: 14px;
 }

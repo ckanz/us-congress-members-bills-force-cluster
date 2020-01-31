@@ -1,65 +1,87 @@
-import { token } from './creds.json';
+import { token } from './creds.json'
+
+const loadingMessage = document.getElementsByClassName('loading')
+let callCounter = 0
+
+const CONGRESS_NUMBER = 116
+const CONGRESS_TYPE = 'senate'
+const MAX_VOTE_MEMBER_COUNT = 50
+const votes = true
 
 const getApiData = (url, callback) => {
-  fetch(url,  { headers: {
-      'X-API-Key': token
-    }}).then(res => {
+  fetch(url, { headers: {
+    'X-API-Key': token
+  } }).then(res => {
     res.json().then(data => {
+      callCounter++
       if (callback) {
-        callback(data);
+        callback(data)
       }
-    });
-  });
-};
+    })
+  })
+}
 
-const enrichMembersData = (memberArray, callback) => {
-  memberArray.forEach((member, index) => {
-    const memberDetailUrl = `https://api.propublica.org/congress/v1/members/${member.id}.json`;
-    getApiData(memberDetailUrl, response => {
-      member.detail = response.results[0];
-      const memberStatementUrl = `https://api.propublica.org/congress/v1/members/${member.id}/statements.json`;
-      getApiData(memberStatementUrl, response => {
-	member.statements = response.results;
-	const memberVoteUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`;
-	getApiData(memberVoteUrl, response => {
-	  member.votes = response.results[0].votes;
-	  for (let i=1;i<=4;i++) {
-	    member.quarterExpensesArray = [];
-	    const memberExpensesUrl = `https://api.propublica.org/congress/v1/members/${member.id}/office_expenses/2018/${i}.json`;
-	    getApiData(memberExpensesUrl, response => {
-	      member.quarterExpensesArray.push(response.results);
-	      if (index === memberArray.length - 1 && i === 4) {
-		callback(memberArray);
-	      }
-	    });
-	  }
-	});
-      });
-    });
-  });
-};
+const getFullName = member => `${member.first_name} ${member.last_name}`
 
-const getMembers = (callback) => {
-  const membersSenate = 'https://api.propublica.org/congress/v1/members/senate/CA/current.json';
-  const membersHouse = 'https://api.propublica.org/congress/v1/members/house/CA/current.json';
-  let membersArray = [];
+const getVotingBehaviour = (memberArray, callback) => {
+  const url = new URL(window.location)
+  const voteParam = url.searchParams.get('votes') // H000874 Steny Hoyer
+  // TODO: replace the below with Array.prototype.find()
+  let voteMember
+  if (voteParam) {
+    memberArray.forEach(member => {
+      if (member.first_name === voteParam || member.id === voteParam) {
+        voteMember = member
+      }
+    })
+  }
+  if (!votes || !voteMember) {
+    callback([])
+    return
+  }
+  loadingMessage[0].innerHTML = `Fetching voting relations for ${getFullName(voteMember)} ...`
+  const links = []
+  let results = 0
+  memberArray = memberArray.slice(0, MAX_VOTE_MEMBER_COUNT)
+  memberArray.forEach(member => {
+    if (voteMember.id !== member.id) {
+      const voteUrl = `https://api.propublica.org/congress/v1/members/${voteMember.id}/votes/${member.id}/${CONGRESS_NUMBER}/${CONGRESS_TYPE}.json`
+      getApiData(voteUrl, response => {
+        results++
+        links.push({
+          source: voteMember.id,
+          target: member.id,
+          value: response.results[0].agree_percent || 0,
+          raw: response.results[0] || {}
+        })
+        loadingMessage[0].innerHTML = `Fetching voting relations between ${getFullName(voteMember)} and ${getFullName(member)}`
+        loadingMessage[1].innerHTML = `${results} / ${memberArray.length} (${Math.floor((results / memberArray.length) * 100)}%)`
+        if (results === memberArray.length - 1) {
+          callback(links)
+        }
+      })
+    }
+  })
+}
 
+const getMembers = callback => {
+  const membersHouse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
+  let membersArray = []
+
+  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}. Congress ...`
   getApiData(membersHouse, response => {
-    membersArray = membersArray.concat(response.results);
-    membersArray.forEach(member => {
-      member.type = 'house';
-    });
-    getApiData(membersSenate, response => {
-      membersArray = membersArray.concat(response.results);
-      membersArray.forEach(member => {
-        member.type = 'senate';
-      });
-      enrichMembersData(membersArray, enrichedMembersArray => {
-	callback(enrichedMembersArray);
-      });
-    });
-  });
-};
+    membersArray = membersArray.concat(response.results[0].members)
+    getVotingBehaviour(membersArray, votedLinks => {
+      console.log('Calls made:', callCounter)
+      loadingMessage[0].style.display = 'none'
+      loadingMessage[1].style.display = 'none'
+      callback({
+        nodes: membersArray,
+        links: votedLinks
+      })
+    })
+  })
+}
 
 export {
   getMembers

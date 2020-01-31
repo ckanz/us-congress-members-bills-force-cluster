@@ -2,6 +2,8 @@
 creds.json
 data.json
 
+*.code-workspace
+
 # Logs
 logs
 *.log
@@ -63,3 +65,4 @@ typings/
 
 # next.js build output
 .next
+src/style.css
