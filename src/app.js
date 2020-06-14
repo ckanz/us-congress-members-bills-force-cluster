@@ -23,6 +23,10 @@ const initVis = data => {
   const nodeData = createNodeData(data.nodes, width, height)
   const { myNodes, myLines } = renderCircles(nodeData, data.links)
   console.log('nodeData', nodeData)
+
+
+  /*
+  // legacy code
   const voteDropdown = document.getElementById('vote-dropdown')
   nodeData.forEach(n => {
     const voteOption = document.createElement('option')
@@ -31,6 +35,7 @@ const initVis = data => {
     voteOption.innerHTML = n.text
     voteDropdown.appendChild(voteOption)
   })
+  */
 
   setTimeout(() => {
     getForce(nodeData, data.links, myNodes, myLines)

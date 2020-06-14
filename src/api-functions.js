@@ -65,12 +65,21 @@ const getVotingBehaviour = (memberArray, callback) => {
 }
 
 const getMembers = callback => {
-  const membersHouse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
+  const membersResponse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
   let membersArray = []
 
   loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}. Congress ...`
-  getApiData(membersHouse, response => {
+  getApiData(membersResponse, response => {
     membersArray = membersArray.concat(response.results[0].members)
+    callback({
+      nodes: membersArray,
+      links: []
+    })
+    loadingMessage[0].style.display = 'none'
+    loadingMessage[1].style.display = 'none'
+
+    /*
+    // legacy code
     getVotingBehaviour(membersArray, votedLinks => {
       console.log('Calls made:', callCounter)
       loadingMessage[0].style.display = 'none'
@@ -80,6 +89,7 @@ const getMembers = callback => {
         links: votedLinks
       })
     })
+    */
   })
 }
 
