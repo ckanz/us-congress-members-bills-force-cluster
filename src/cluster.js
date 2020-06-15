@@ -32,6 +32,108 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   return myForce;
 };
 
+const renderCircles = (clusterData, linkData) => {
+  const myLines = select('#viz-container')
+    .append('g')
+    .attr('id', 'line-container')
+    .selectAll('line')
+    .data(linkData)
+    .enter()
+    .append('line')
+    .attr('class', 'cluster-line');
+
+  myLines
+    .attr('x1', 0)
+    .attr('x2', 0)
+    .attr('y1', 0)
+    .attr('y2', 0)
+    .style('stroke', 'black')
+    // TODO: any bill value to map on links?
+    // .style('opacity', 0)
+    // .transition()
+    // .delay((d, i) => 3000 + (i * 3))
+    // .style('opacity', d => d.value / 100)
+    .style('stroke-width', 0.5);
+
+  const myNodes = select('#viz-container')
+    .append('g')
+    .attr('id', 'circle-container')
+    .selectAll('g')
+    .data(clusterData)
+    .enter()
+    .append('g');
+
+   myNodes.style('opacity', 0)
+    .transition()
+    .delay((d, i) => i * 10)
+    .style('opacity', 1)
+    .attr('class', 'cluster-node');
+
+  /*
+  myNodes
+    .on('mouseenter', enterNode)
+    .on('mouseleave', exitNode);
+  */
+
+  myNodes
+    .on('click', d => {
+      if (d.raw.url) {
+        window.open(d.raw.url);
+      } else {
+        console.log('No URL for this page available :-(');
+        console.log(d.raw.url);
+      }
+    })
+    .style('cursor', d => d.raw.url ? 'pointer' : 'default')
+
+  myNodes
+    .append('circle')
+    .attr('class', 'cluster-circle')
+    .attr('cx', 0)
+    .attr('cy', 0)
+    .attr('r', d => d.radius)
+    .style('fill', d => d.color)
+    .style('stroke', 'black')
+    .style('stroke-width', .5)
+    // TODO: value to use for opacity (if any)?
+    // .style('opacity', d => getVotesWithPartyPct(d));
+
+  myNodes
+    .append('foreignObject')
+    .style('pointer-events', 'none')
+    .attr('x', d => -d.radius * .75)
+    .attr('y', d => -d.radius)
+    .attr('width', d => d.radius * 1.5)
+    .attr('height', d => d.radius * 2)
+    .append('xhtml:div')
+    .attr('class', 'node-text')
+    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
+    .text(d => d.text.substring(0, 50));
+
+  /*
+  // TODO: what to do with the arcs?
+  myNodes
+    .append('path')
+    .attr('d', attendedVotewArc)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'black');
+
+  myNodes
+    .append('path')
+    .attr('d', partyVotewArc)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'white');
+  */
+
+  return {
+    myNodes,
+    myLines
+  };
+}
+
+/*
 const attendedVotewArc = arc()
   .innerRadius(d => d.radius - (d.radius * .1))
   .outerRadius(d => d.radius - (d.radius * .05))
@@ -58,7 +160,6 @@ const addLeafCircle = (node, x, y, r, url, img) => {
   // TODO: use icons from file
   img = img || 'https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png';
 
-  /*
   leafCircle
     .append('circle')
     .style('stroke-width', 0)
@@ -75,7 +176,6 @@ const addLeafCircle = (node, x, y, r, url, img) => {
     .attr('r', 0)
     .transition()
     .attr('r', r)
-    */
 
     leafCircle
       .append('image')
@@ -140,94 +240,7 @@ const exitNode = ({ radius, text }, i, e) => {
     });
   node.selectAll('.hover-circle').remove();
 };
-
-const renderCircles = (clusterData, linkData) => {
-  const myLines = select('#viz-container')
-    .append('g')
-    .attr('id', 'line-container')
-    .selectAll('line')
-    .data(linkData)
-    .enter()
-    .append('line')
-    .attr('class', 'cluster-line');
-
-  myLines
-    .attr('x1', 0)
-    .attr('x2', 0)
-    .attr('y1', 0)
-    .attr('y2', 0)
-    .style('stroke', 'black')
-    // TODO: any bill value to map on links?
-    // .style('opacity', 0)
-    // .transition()
-    // .delay((d, i) => 3000 + (i * 3))
-    // .style('opacity', d => d.value / 100)
-    .style('stroke-width', 0.5);
-
-  const myNodes = select('#viz-container')
-    .append('g')
-    .attr('id', 'circle-container')
-    .selectAll('g')
-    .data(clusterData)
-    .enter()
-    .append('g');
-
-   myNodes.style('opacity', 0)
-    .transition()
-    .delay((d, i) => i * 10)
-    .style('opacity', 1)
-    .attr('class', 'cluster-node');
-
-  myNodes
-    .on('mouseenter', enterNode)
-    .on('mouseleave', exitNode);
-
-  myNodes
-    .append('circle')
-    .attr('class', 'cluster-circle')
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('r', d => d.radius)
-    .style('fill', d => d.color)
-    .style('stroke', 'black')
-    .style('stroke-width', .5)
-    // TODO: value to use for opacity (if any)?
-    // .style('opacity', d => getVotesWithPartyPct(d));
-
-  myNodes
-    .append('foreignObject')
-    .style('pointer-events', 'none')
-    .attr('x', d => -d.radius * .75)
-    .attr('y', d => -d.radius)
-    .attr('width', d => d.radius * 1.5)
-    .attr('height', d => d.radius * 2)
-    .append('xhtml:div')
-    .attr('class', 'node-text')
-    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
-    .text(d => d.text.substring(0, 50));
-
-  /*
-  // TODO: what to do with the arcs?
-  myNodes
-    .append('path')
-    .attr('d', attendedVotewArc)
-    .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'black');
-
-  myNodes
-    .append('path')
-    .attr('d', partyVotewArc)
-    .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'white');
-  */
-
-  return {
-    myNodes,
-    myLines
-  };
-}
+*/
 
 export {
   renderCircles,
