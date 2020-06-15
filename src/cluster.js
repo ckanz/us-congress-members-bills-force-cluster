@@ -7,7 +7,9 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
     .force("charge", forceManyBody().strength(0.1))
-    .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
+    .force('link', forceLink().id(d => d.id).distance(100).strength(0.1))
+    // TODO: any value to map to force here?
+    // .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
     .force('collide', forceCollide(d => d.radius * 2).strength(0.1));
 
   const layoutTick = () => {
@@ -147,6 +149,7 @@ const renderCircles = (clusterData, linkData) => {
     .attr('y1', 0)
     .attr('y2', 0)
     .style('stroke', 'black')
+    // TODO: any bill value to map on links?
     // .style('opacity', 0)
     // .transition()
     // .delay((d, i) => 3000 + (i * 3))
@@ -174,12 +177,14 @@ const renderCircles = (clusterData, linkData) => {
   myNodes
     .append('circle')
     .attr('class', 'cluster-circle')
-    .attr('vector-effect', 'non-scaling-stroke')
     .attr('cx', 0)
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    .style('opacity', d => getVotesWithPartyPct(d));
+    .style('stroke', 'black')
+    .style('stroke-width', .5)
+    // TODO: value to use for opacity (if any)?
+    // .style('opacity', d => getVotesWithPartyPct(d));
 
   myNodes
     .append('foreignObject')
@@ -193,6 +198,8 @@ const renderCircles = (clusterData, linkData) => {
     .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
     .text(d => d.text.substring(0, 50));
 
+  /*
+  // TODO: what to do with the arcs?
   myNodes
     .append('path')
     .attr('d', attendedVotewArc)
@@ -206,6 +213,7 @@ const renderCircles = (clusterData, linkData) => {
     .attr('class', 'node-arc')
     .style('opacity', 0.5)
     .style('fill', 'white');
+  */
 
   return {
     myNodes,

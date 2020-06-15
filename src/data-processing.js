@@ -22,7 +22,7 @@ const createNodeData = (data, width, height) => {
       return {
         id: dataPoint.bill_id,
         x: width * 0.5,
-        y: height / 1.5,
+        y: height / 2,
         radius: !dataPoint.bill_id ? scale(parseInt(dataPoint.seniority)) : 20,
         raw: dataPoint,
         text: dataPoint.short_title,
