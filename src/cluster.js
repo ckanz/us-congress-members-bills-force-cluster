@@ -3,11 +3,17 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
+const fbLogo = require('./images/fb.png');
+const ytLogo = require('./images/yt.png');
+const gtLogo = require('./images/gt.jpeg');
+const vsLogo = require('./images/vs.png');
+const urlLogo = require('./images/url.png');
+
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
     .force("charge", forceManyBody().strength(0.1))
-    .force('link', forceLink().id(d => d.id).distance(100).strength(0.1))
+    .force('link', forceLink().id(d => d.id).distance(50).strength(0.1))
     // TODO: any value to map to force here?
     // .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
     .force('collide', forceCollide(d => d.radius * 2).strength(0.1));
@@ -50,10 +56,12 @@ const addLeafCircle = (node, x, y, r, url, img) => {
   const leafCircle = node.insert('g').attr('class', 'leaf-circle');
 
   // TODO: use icons from file
-  img = 'https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png';
+  img = img || 'https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png';
 
+  /*
   leafCircle
     .append('circle')
+    .style('stroke-width', 0)
     .on('click', () => {
       if (url) {
         window.open(url);
@@ -62,20 +70,20 @@ const addLeafCircle = (node, x, y, r, url, img) => {
         console.log(url);
       }
     })
-    .attr('vector-effect', 'non-scaling-stroke')
     .attr('cx', x)
     .attr('cy', y)
     .attr('r', 0)
     .transition()
     .attr('r', r)
+    */
 
     leafCircle
       .append('image')
       .attr('class', 'leaf-circle-icon')
-      .attr('x', x - r / 2)
-      .attr('y', y - r / 2)
-      .attr('width', r)
-      .attr('height', r)
+      .attr('x', x - r)
+      .attr('y', y - r)
+      .attr('width', r * 2)
+      .attr('height', r * 2)
       .attr('xlink:href', img)
       .style('opacity', 0)
       .transition()
@@ -84,20 +92,20 @@ const addLeafCircle = (node, x, y, r, url, img) => {
 
 }
 
-const addLeaves = (node, d) => {
-  const mainRadius = d.radius;
-  const leafRadius = mainRadius / 4;
-  const centerLeafX = mainRadius + (mainRadius / 3);
-  const sideLeafX = mainRadius - leafRadius / 2;
+const addLeaves = (node, { radius, raw }) => {
+  const leafRadius = radius / 4;
+  const centerLeafX = radius + (radius / 3);
+  const sideLeafX = radius - leafRadius / 2;
 
   // TODO: only add leaves when ids exist
-  addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${d.raw.youtube_id}`);
-  addLeafCircle(node, sideLeafX, -mainRadius, leafRadius, `https://twitter.com/${d.raw.twitter_id}`);
-  addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius, `https://facebook.com/${d.raw.facebook_account}`);
+  const { youtube_id, twitter_id, facebook_account, votesmart_id, govtrack_id, url } = raw
+  if (youtube_id) addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${youtube_id}`, ytLogo.default);
+  if (twitter_id) addLeafCircle(node, sideLeafX, -radius, leafRadius, `https://twitter.com/${twitter_id}`);
+  if (facebook_account) addLeafCircle(node, -sideLeafX, -radius, leafRadius, `https://facebook.com/${facebook_account}`, fbLogo.default);
 
-  addLeafCircle(node, -sideLeafX, mainRadius, leafRadius, d.raw.url);
-  addLeafCircle(node, sideLeafX, mainRadius, leafRadius, `https://votesmart.org/candidate/${d.raw.votesmart_id}`);
-  addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${d.raw.govtrack_id}`);
+  if (url) addLeafCircle(node, -sideLeafX, radius, leafRadius, url, urlLogo.default);
+  if (votesmart_id) addLeafCircle(node, sideLeafX, radius, leafRadius, `https://votesmart.org/candidate/${votesmart_id}`, vsLogo.default);
+  if (govtrack_id) addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${govtrack_id}`, gtLogo.default);
 
   node
     .insert('circle', 'circle')
