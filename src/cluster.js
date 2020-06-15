@@ -88,6 +88,7 @@ const addLeaves = (node, d) => {
   const centerLeafX = mainRadius + (mainRadius / 3);
   const sideLeafX = mainRadius - leafRadius / 2;
 
+  // TODO: only add leaves when ids exist
   addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${d.raw.youtube_id}`);
   addLeafCircle(node, sideLeafX, -mainRadius, leafRadius, `https://twitter.com/${d.raw.twitter_id}`);
   addLeafCircle(node, -sideLeafX, -mainRadius, leafRadius, `https://facebook.com/${d.raw.facebook_account}`);
@@ -146,10 +147,10 @@ const renderCircles = (clusterData, linkData) => {
     .attr('y1', 0)
     .attr('y2', 0)
     .style('stroke', 'black')
-    .style('opacity', 0)
-    .transition()
-    .delay((d, i) => 3000 + (i * 3))
-    .style('opacity', d => d.value / 100)
+    // .style('opacity', 0)
+    // .transition()
+    // .delay((d, i) => 3000 + (i * 3))
+    // .style('opacity', d => d.value / 100)
     .style('stroke-width', 0.5);
 
   const myNodes = select('#viz-container')
@@ -190,7 +191,7 @@ const renderCircles = (clusterData, linkData) => {
     .append('xhtml:div')
     .attr('class', 'node-text')
     .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
-    .text(d => d.text);
+    .text(d => d.text.substring(0, 50));
 
   myNodes
     .append('path')

@@ -23,6 +23,7 @@ const getApiData = (url, callback) => {
 
 const getFullName = member => `${member.first_name} ${member.last_name}`
 
+/*
 const getVotingBehaviour = (memberArray, callback) => {
   const url = new URL(window.location)
   const voteParam = url.searchParams.get('votes') // H000874 Steny Hoyer
@@ -63,6 +64,7 @@ const getVotingBehaviour = (memberArray, callback) => {
     }
   })
 }
+*/
 
 const getMembers = callback => {
   const membersResponse = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
@@ -71,13 +73,39 @@ const getMembers = callback => {
   loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}. Congress ...`
   getApiData(membersResponse, response => {
     membersArray = membersArray.concat(response.results[0].members)
+    getApiData(`https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/bills/introduced.json`, response => {
+      membersArray = membersArray.concat(response.results[0].bills)
+      const billsArray = response.results[0].bills.map(bill => {
+        // TODO: this mapping should be in data-processing.js:createLingData
+        return {
+          source: bill.sponsor_id,
+          target: bill.bill_id,
+          value: 100,
+          raw: bill
+        }
+      })
+      callback({
+        nodes: membersArray,
+        links: billsArray
+      })
+      loadingMessage[0].style.display = 'none'
+      loadingMessage[1].style.display = 'none'
+    })
+
+    /*
+    membersArray.forEach(member => {
+      const billsUrl = `https://api.propublica.org/congress/v1/members/${member.id}/votes.json`
+      getApiData(billsUrl, response => {
+        console.log(`bills response for ${member}`, response)
+      })
+    })
     callback({
       nodes: membersArray,
       links: []
     })
     loadingMessage[0].style.display = 'none'
     loadingMessage[1].style.display = 'none'
-
+    */
     /*
     // legacy code
     getVotingBehaviour(membersArray, votedLinks => {

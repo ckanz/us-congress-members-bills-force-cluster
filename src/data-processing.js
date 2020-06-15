@@ -18,6 +18,17 @@ const getVotesWithPartyPct = d => {
 const createNodeData = (data, width, height) => {
   const scale = getScale(data);
   return data.map(dataPoint => {
+    if (dataPoint.bill_id) {
+      return {
+        id: dataPoint.bill_id,
+        x: width * 0.5,
+        y: height / 1.5,
+        radius: !dataPoint.bill_id ? scale(parseInt(dataPoint.seniority)) : 20,
+        raw: dataPoint,
+        text: dataPoint.short_title,
+        color: 'grey'
+      }
+    }
     return {
       id: dataPoint.id,
       // TODO: use gravity force for cluster locations instead?

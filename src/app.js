@@ -7,7 +7,8 @@ import { zoom } from 'd3-zoom'
 
 const californiaVoting = require('./local-data.json')
 const allMembers = require('./all-members.json')
-const live = true
+const membersAndBills = require('./members-and-bills.json')
+const live = false
 
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
@@ -23,7 +24,6 @@ const initVis = data => {
   const nodeData = createNodeData(data.nodes, width, height)
   const { myNodes, myLines } = renderCircles(nodeData, data.links)
   console.log('nodeData', nodeData)
-
 
   /*
   // legacy code
@@ -46,17 +46,19 @@ const initVis = data => {
 
 if (live) {
   getMembers(data => {
+    console.log('live data:')
     console.log(data)
     console.log(JSON.stringify(data))
     initVis(data)
   })
 } else {
-  initVis(allMembers)
-  console.log(allMembers)
+  initVis(membersAndBills)
 }
 
 // TODO: change radius of cluster nodes to selected metric
+/*
 document.getElementById('size-dropdown').addEventListener('change', (e) => {
   alert(`Sizing by ${e.srcElement.value} not implemented yet.`)
   e.srcElement.value = 'Seneriority'
 })
+*/
