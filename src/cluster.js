@@ -3,12 +3,6 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
-const fbLogo = require('./images/fb.png');
-const ytLogo = require('./images/yt.png');
-const gtLogo = require('./images/gt.jpeg');
-const vsLogo = require('./images/vs.png');
-const urlLogo = require('./images/url.png');
-
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
@@ -134,6 +128,12 @@ const renderCircles = (clusterData, linkData) => {
 }
 
 /*
+const fbLogo = require('./images/fb.png');
+const ytLogo = require('./images/yt.png');
+const gtLogo = require('./images/gt.jpeg');
+const vsLogo = require('./images/vs.png');
+const urlLogo = require('./images/url.png');
+
 const attendedVotewArc = arc()
   .innerRadius(d => d.radius - (d.radius * .1))
   .outerRadius(d => d.radius - (d.radius * .05))
