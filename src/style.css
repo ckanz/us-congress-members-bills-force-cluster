@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  // font-family: Arial, Helvetica, sans-serif;
 }
 
 .node-text {
@@ -19,20 +19,14 @@ body {
 
 .top-fixed {
   width: 100%;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-}
-
-#top-bar {
-  padding-left: 20px;
-  background: white;
-  box-shadow: 0px 1px 10px white;
-  border-bottom: 1px solid black;
 }
 
 #loading {
   text-align: center;
   margin-top: 250px;
   font-size: 14px;
+  position: fixed;
+  top: 100px;
+  left: 0px;
+  width: 100%;
 }

@@ -1,4 +1,5 @@
 import './style.css'
+import 'mini.css'
 import { getMembers } from './api-functions'
 import { createNodeData, createLinkData } from './data-processing'
 import { renderCircles, getForce } from './cluster'
