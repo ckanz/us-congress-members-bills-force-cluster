@@ -3,32 +3,33 @@
 
 <body>
     <div>
-        <h1>House Members of the 116th US Congress</h1>
+        <h1>Force Cluster Layout of US Congress Members and their Bills</h1>
         <div id="interaction">
             <span>Select Congress: </span>
-            <select>
-            <option value="116">116</option>
-            <option value="115">115</option>
-            <option value="114">114</option>
-            <option value="113">113</option>
-            <option value="112">112</option>
-          </select>
+            <select id="congress" selected="116">
+              <option value="116">116</option>
+              <option value="115">115</option>
+              <option value="114">114</option>
+              <option value="113">113</option>
+              <option value="112">112</option>
+            </select>
             <span>Select Chamber: </span>
+            <select id="chamber" selected="Senate">
+              <option value="senate">Senate</option>
+              <option value="house">House</option>
+            </select>
+            <!--<span>Size Nodes by: </span>
             <select>
-            <option value="house">House</option>
-            <option value="senate">Senate</option>
-          </select>
-            <span>Size Nodes by: </span>
-            <select>
-            <option value="Seneriority">Seneriority</option>
-            <option value="Bills sponsored">Bills sponsored</option>
-            <option value="Bills co-sponsored">Bills co-sponsored</option>
-            <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
-            <option value="Total Expenses">Total Expense</option>
-          </select>
+              <option value="Seneriority">Seneriority</option>
+              <option value="Bills sponsored">Bills sponsored</option>
+              <option value="Bills co-sponsored">Bills co-sponsored</option>
+              <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
+              <option value="Total Expenses">Total Expense</option>
+            </select>
             <span>Get Bills about:</span>
             <input name="bill-query" />
             <button class="small" id="query-bills">Search Bills</button>
+            -->
         </div>
     </div>
     <div id="loading">
@@ -39,7 +40,7 @@
       <g id="viz-container"></g>
     </svg>
     <footer class="sticky">
-        <p>Footer text</p>
+        <p>Data comes from the <a href="https://projects.propublica.org/api-docs/congress-api/" target="blank">ProPublica Congress API</a>. Created with <a href="https://d3js.org/" target="blank">D3</a> and <a href="https://minicss.org/" target="blank">mini.css</a> components. You can find the code of the project on <a href="https://github.com/ckanz/congressional-representatives-california-visualisation" target="blank">GitHub</a>.</p>
     </footer>
 </body>
 
