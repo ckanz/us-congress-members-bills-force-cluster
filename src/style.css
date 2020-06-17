@@ -2,6 +2,14 @@ body {
   // font-family: Arial, Helvetica, sans-serif;
 }
 
+#interaction {
+  border-bottom: 1px solid grey;
+}
+
+#interaction span {
+  margin-left: 12px;
+}
+
 .node-text {
   text-align: center;
   display: flex;

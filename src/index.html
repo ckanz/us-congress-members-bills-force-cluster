@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <body>
     <div>
         <h1>House Members of the 116th US Congress</h1>
-        <header>
-	  <span>Size Nodes by: </span>
-	  <select>
-	    <option value="Seneriority">Seneriority</option>
-	    <option value="Bills sponsored">Bills sponsored</option>
-	    <option value="Bills co-sponsored">Bills co-sponsored</option>
-	    <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
-	    <option value="Total Expenses">Total Expense</option>
-	  </select>
-        <span>Get Bills about:</span>
-        <input name="bill-query"/>
-        <button id="query-bills">Search Bills</button>
-        </header>
+        <div id="interaction">
+            <span>Select Congress: </span>
+            <select>
+            <option value="116">116</option>
+            <option value="115">115</option>
+            <option value="114">114</option>
+            <option value="113">113</option>
+            <option value="112">112</option>
+          </select>
+            <span>Select Chamber: </span>
+            <select>
+            <option value="house">House</option>
+            <option value="senate">Senate</option>
+          </select>
+            <span>Size Nodes by: </span>
+            <select>
+            <option value="Seneriority">Seneriority</option>
+            <option value="Bills sponsored">Bills sponsored</option>
+            <option value="Bills co-sponsored">Bills co-sponsored</option>
+            <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
+            <option value="Total Expenses">Total Expense</option>
+          </select>
+            <span>Get Bills about:</span>
+            <input name="bill-query" />
+            <button class="small" id="query-bills">Search Bills</button>
+        </div>
     </div>
     <div id="loading">
         <div class="loading"></div>
@@ -24,6 +38,9 @@
     <svg class="top-fixed">
       <g id="viz-container"></g>
     </svg>
+    <footer class="sticky">
+        <p>Footer text</p>
+    </footer>
 </body>
 
 <script>
