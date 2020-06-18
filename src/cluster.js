@@ -22,7 +22,10 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
       .attr('y2', d => d.target.y || 0);
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
-  if (linkData && linkData.length > 0) myForce.force('link').links(linkData);
+
+  const memberIdsArray = nodeData.map(n => n.id)
+  const filteredLinks = linkData.filter(link => memberIdsArray.includes(link.source))
+  if (linkData && linkData.length > 0) myForce.force('link').links(filteredLinks);
   return myForce;
 };
 

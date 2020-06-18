@@ -42,24 +42,12 @@ const createNodeData = (data, width, height) => {
   });
 };
 
-const createLinkData = data => {
-  // TODO: find more meaningful connection between nodes
-  return {};
-  let linkData = [];
-  let linkedIds = [];
-  data.forEach(dataRow => {
-    data.forEach(nextRow => {
-      if (dataRow.id != nextRow.id) {
-        linkData.push({
-          source: dataRow.id,
-          target: nextRow.id,
-          value: dataRow.seniority
-        });
-      }
-    })
-  });
-  return linkData;
-};
+const createLinkData = data => data.map(d => ({
+  source: d.sponsor_id,
+  target: d.bill_id,
+  value: 100,
+  raw: d
+}))
 
 export {
   createNodeData,

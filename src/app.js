@@ -25,10 +25,11 @@ const myZoom = zoom()
 
 const createForceCluster = data => {
   const nodeData = createNodeData(data.nodes, width, height)
-  const { myNodes, myLines } = renderCircles(nodeData, data.links)
+  const linkData = createLinkData(data.links)
+  const { myNodes, myLines } = renderCircles(nodeData, linkData)
 
   setTimeout(() => {
-    getForce(nodeData, data.links, myNodes, myLines)
+    getForce(nodeData, linkData, myNodes, myLines)
   }, 200)
 
 mySvg.call(myZoom)
