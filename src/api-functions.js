@@ -36,8 +36,9 @@ const fetchBills = (billsArray = [], callback) => {
 const fetchData = callback => {
   const CONGRESS_NUMBER = document.getElementById('congress').value || 116
   const CONGRESS_TYPE = document.getElementById('chamber').value || 'senate'
-  loadingMessage[0].style.display = 'block'
-  loadingMessage[1].style.display = 'block'
+  loadingMessage[0].style.opacity = 1
+  loadingMessage[1].style.opacity = 1
+  loadingMessage[1].value = 0
 
   setInterval(() => {
     loadingMessage[1].value += .1
@@ -59,8 +60,8 @@ const fetchData = callback => {
         links: billsArray
       })
 
-      loadingMessage[0].style.display = 'none'
-      loadingMessage[1].style.display = 'none'
+      loadingMessage[0].style.opacity = 0
+      loadingMessage[1].style.opacity = 0
       console.log('API calls made:', apiCalls)
     })
     /*

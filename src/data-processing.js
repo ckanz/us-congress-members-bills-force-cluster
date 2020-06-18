@@ -45,7 +45,7 @@ const createNodeData = (data, width, height) => {
 const createLinkData = data => data.map(d => ({
   source: d.sponsor_id,
   target: d.bill_id,
-  value: 100,
+  value: 10,
   raw: d
 }))
 

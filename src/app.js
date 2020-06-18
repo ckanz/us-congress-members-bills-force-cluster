@@ -32,7 +32,7 @@ const createForceCluster = data => {
     getForce(nodeData, linkData, myNodes, myLines)
   }, 200)
 
-mySvg.call(myZoom)
+  mySvg.call(myZoom)
 }
 
 mySvg.style('height', height)

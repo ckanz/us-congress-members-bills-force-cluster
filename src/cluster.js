@@ -6,8 +6,8 @@ import { getVotesWithPartyPct } from './data-processing';
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
-    .force("charge", forceManyBody().strength(0.1))
-    .force('link', forceLink().id(d => d.id).distance(50).strength(0.1))
+    .force("charge", forceManyBody().strength(0.7))
+    .force('link', forceLink().id(d => d.id).distance(50).strength(1))
     // TODO: any value to map to force here?
     // .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
     .force('collide', forceCollide(d => d.radius * 2).strength(0.1));
@@ -45,10 +45,11 @@ const renderCircles = (clusterData, linkData) => {
     .attr('y1', 0)
     .attr('y2', 0)
     .style('stroke', 'black')
+    .style('opacity', 0)
+    .transition()
+    .delay((d, i) => 300 + (i * 3))
+    .style('opacity', 1)
     // TODO: any bill value to map on links?
-    // .style('opacity', 0)
-    // .transition()
-    // .delay((d, i) => 3000 + (i * 3))
     // .style('opacity', d => d.value / 100)
     .style('stroke-width', 0.5);
 
@@ -62,7 +63,7 @@ const renderCircles = (clusterData, linkData) => {
 
    myNodes.style('opacity', 0)
     .transition()
-    .delay((d, i) => i * 10)
+    .delay((d, i) => i * 3)
     .style('opacity', 1)
     .attr('class', 'cluster-node');
 
@@ -104,8 +105,11 @@ const renderCircles = (clusterData, linkData) => {
     .attr('height', d => d.radius * 2)
     .append('xhtml:div')
     .attr('class', 'node-text')
-    .attr('style', d => `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`)
-    .text(d => d.text.substring(0, 50));
+    .attr('style', d => {
+      if (d.raw.bill_id) return `height: ${d.radius * 2}px; font-size: ${d.radius / 8}px;`
+      return `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`
+    })
+    .text(d => (d.text.substring(0, 150)) + (d.text.length > 150 ? '...' : ''));
 
   /*
   // TODO: what to do with the arcs?
