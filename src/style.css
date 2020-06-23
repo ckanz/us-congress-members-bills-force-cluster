@@ -10,12 +10,26 @@ body {
   margin-left: 12px;
 }
 
+.cluster-circle {
+  stroke: black;
+  stroke-width: 0.5;
+}
+
+.cluster-circle:hover {
+  stroke-width: 1.0;
+}
+
 .node-text {
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: default;
+}
+
+.cluster-line {
+  stroke: black;
+  stroke-width: 0.5;
 }
 
 .leaf-circle {
@@ -37,7 +51,9 @@ body {
   top: 100px;
   left: 0px;
   width: 100%;
+  pointer-events: none;
 }
+
 .loading {
   transition: opacity 2s;
 }

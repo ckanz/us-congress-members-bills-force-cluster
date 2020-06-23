@@ -1,11 +1,12 @@
 import { scaleLinear } from 'd3-scale';
 import { max, min } from 'd3-array';
 
-const getScale = data => {
-  const maxValue = max(data.map(d => parseInt(d.seniority)));
-  const minValue = min(data.map(d => parseInt(d.seniority)));
-  return scaleLinear().range([8, 30]).domain([minValue, maxValue]);
-};
+const getScaleForKey = (data, key) => scaleLinear()
+  .range([200, 1000])
+  .domain([
+    min(data.map(d => parseInt(d[key]))),
+    max(data.map(d => parseInt(d[key])))
+  ]);
 
 const getVotesWithPartyPct = d => {
   if (!d || !d.raw || !d.raw.votes_with_party_pct) {
@@ -15,14 +16,15 @@ const getVotesWithPartyPct = d => {
 };
 
 const createNodeData = (data, width, height) => {
-  const scale = getScale(data);
+  const cosponsorScale = getScaleForKey(data, 'seniority')
+  const seniorityScale = getScaleForKey(data, 'cosponsors')
   return data.map(dataPoint => {
     if (dataPoint.bill_id) {
       return {
         id: dataPoint.bill_id,
         x: width * 0.5,
         y: height / 2,
-        radius: !dataPoint.bill_id ? Math.sqrt(scale(parseInt(dataPoint.seniority))) : 20,
+        radius:  Math.sqrt(cosponsorScale(parseInt(dataPoint.cosponsors))),
         raw: dataPoint,
         text: dataPoint.short_title,
         color: 'grey'
@@ -32,7 +34,7 @@ const createNodeData = (data, width, height) => {
       id: dataPoint.id,
       x: dataPoint.party === 'D' ? width * 0.33 : width * 0.66,
       y: height / 2,
-      radius: scale(parseInt(dataPoint.seniority)),
+      radius: Math.sqrt(seniorityScale(parseInt(dataPoint.seniority))),
       raw: dataPoint,
       text: dataPoint.name ? dataPoint.name : `${dataPoint.first_name} ${dataPoint.last_name}`,
       color: dataPoint.party === 'D' ? '#3333FF' : '#E81B23' // TODO: do a better check (in case of other parties, e.g. green?)

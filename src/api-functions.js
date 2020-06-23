@@ -9,7 +9,7 @@ const getApiData = (url, callback) => {
     'X-API-Key': token
   } }).then(res => {
     res.json().then(data => {
-      apiCalls.push({ url, res })
+      apiCalls.push({ url, res, data })
       if (callback) {
         callback(data)
       }

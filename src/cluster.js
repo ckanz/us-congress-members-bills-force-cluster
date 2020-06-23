@@ -3,6 +3,8 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
+let nodeCount = 0
+
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
@@ -23,13 +25,14 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   };
   myForce.nodes(nodeData).on('tick', layoutTick);
 
-  const memberIdsArray = nodeData.map(n => n.id)
-  const filteredLinks = linkData.filter(link => memberIdsArray.includes(link.source))
+  const memberIdsArray = nodeData.map(n => n.id);
+  const filteredLinks = linkData.filter(link => memberIdsArray.includes(link.source));
   if (linkData && linkData.length > 0) myForce.force('link').links(filteredLinks);
   return myForce;
 };
 
-const renderCircles = (clusterData, linkData) => {
+const renderCircles = (nodeData, linkData) => {
+  nodeCount = nodeData.length;
   const myLines = select('#viz-container')
     .append('g')
     .attr('id', 'line-container')
@@ -44,20 +47,18 @@ const renderCircles = (clusterData, linkData) => {
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
-    .style('stroke', 'black')
     .style('opacity', 0)
     .transition()
-    .delay((d, i) => 300 + (i * 3))
+    .delay((d, i) => nodeData.length * 3 + (i * 3))
     .style('opacity', 1)
     // TODO: any bill value to map on links?
     // .style('opacity', d => d.value / 100)
-    .style('stroke-width', 0.5);
 
   const myNodes = select('#viz-container')
     .append('g')
     .attr('id', 'circle-container')
     .selectAll('g')
-    .data(clusterData)
+    .data(nodeData)
     .enter()
     .append('g');
 
@@ -77,12 +78,14 @@ const renderCircles = (clusterData, linkData) => {
     .on('click', d => {
       if (d.raw.url) {
         window.open(d.raw.url);
+      } else if (d.raw.congressdotgov_url) {
+        window.open(d.raw.congressdotgov_url);
       } else {
-        console.log('No URL for this page available :-(');
-        console.log(d.raw.url);
+        console.log('No URL available for this node.', d);
       }
+      console.log(d)
     })
-    .style('cursor', d => d.raw.url ? 'pointer' : 'default')
+    .style('cursor', d => d.raw.url || d.raw.congressdotgov_url ? 'pointer' : 'default');
 
   myNodes
     .append('circle')
@@ -91,8 +94,6 @@ const renderCircles = (clusterData, linkData) => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    .style('stroke', 'black')
-    .style('stroke-width', .5)
     // TODO: value to use for opacity (if any)?
     // .style('opacity', d => getVotesWithPartyPct(d));
 
@@ -106,13 +107,11 @@ const renderCircles = (clusterData, linkData) => {
     .append('xhtml:div')
     .attr('class', 'node-text')
     .attr('style', d => {
-      if (d.raw.bill_id) return `height: ${d.radius * 2}px; font-size: ${d.radius / 8}px;`
-      return `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`
+      if (d.raw.bill_id) return `height: ${d.radius * 2}px; font-size: ${d.radius / 8}px;`;
+      return `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`;
     })
     .text(d => (d.text.substring(0, 150)) + (d.text.length > 150 ? '...' : ''));
 
-  /*
-  // TODO: what to do with the arcs?
   myNodes
     .append('path')
     .attr('d', attendedVotewArc)
@@ -120,6 +119,8 @@ const renderCircles = (clusterData, linkData) => {
     .style('opacity', 0.5)
     .style('fill', 'black');
 
+  /*
+  // TODO: what to do with the arcs?
   myNodes
     .append('path')
     .attr('d', partyVotewArc)
@@ -128,18 +129,50 @@ const renderCircles = (clusterData, linkData) => {
     .style('fill', 'white');
   */
 
+  myNodes
+    .append('path')
+    .attr('d', cosponsorArcDem)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'blue');
+
+  myNodes
+    .append('path')
+    .attr('d', cosponsorArcRep)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.5)
+    .style('fill', 'red');
+
   return {
     myNodes,
     myLines
   };
 }
 
-/*
-const fbLogo = require('./images/fb.png');
-const ytLogo = require('./images/yt.png');
-const gtLogo = require('./images/gt.jpeg');
-const vsLogo = require('./images/vs.png');
-const urlLogo = require('./images/url.png');
+const cosponsorArcDem = arc()
+  .innerRadius(d => d.radius - (d.radius * .1))
+  .outerRadius(d => d.radius - (d.radius * .05))
+  .cornerRadius(12)
+  .startAngle(0)
+  .endAngle(d => {
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
+    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 1.999 : 0;
+  });
+
+const cosponsorArcRep = arc()
+  .innerRadius(d => d.radius - (d.radius * .1))
+  .outerRadius(d => d.radius - (d.radius * .05))
+  .cornerRadius(12)
+  .startAngle(d => {
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
+    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 1.999 : 0;
+  })
+  .endAngle(d => {
+    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / nodeCount) : 0;
+    if (isNaN(cosponsorsPct)) return 0
+    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 1.999 : 0;
+  });
 
 const attendedVotewArc = arc()
   .innerRadius(d => d.radius - (d.radius * .1))
@@ -160,6 +193,13 @@ const partyVotewArc = arc()
     const partyVotesPct = d.raw.votes_with_party_pct || 0;
     return ((partyVotesPct / 100) * Math.PI * 1.999);
   });
+
+/*
+const fbLogo = require('./images/fb.png');
+const ytLogo = require('./images/yt.png');
+const gtLogo = require('./images/gt.jpeg');
+const vsLogo = require('./images/vs.png');
+const urlLogo = require('./images/url.png');
 
 const addLeafCircle = (node, x, y, r, url, img) => {
   const leafCircle = node.insert('g').attr('class', 'leaf-circle');
