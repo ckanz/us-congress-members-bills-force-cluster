@@ -3,8 +3,6 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
-let nodeCount = 0
-
 const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
@@ -32,7 +30,6 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
 };
 
 const renderCircles = (nodeData, linkData) => {
-  nodeCount = nodeData.length;
   const myLines = select('#viz-container')
     .append('g')
     .attr('id', 'line-container')
@@ -119,29 +116,26 @@ const renderCircles = (nodeData, linkData) => {
     .style('opacity', 0.5)
     .style('fill', 'black');
 
-  /*
-  // TODO: what to do with the arcs?
-  myNodes
-    .append('path')
-    .attr('d', partyVotewArc)
-    .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'white');
-  */
-
   myNodes
     .append('path')
     .attr('d', cosponsorArcDem)
     .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'blue');
+    .style('opacity', 0.75)
+    .style('fill', '#3333FF');
 
   myNodes
     .append('path')
     .attr('d', cosponsorArcRep)
     .attr('class', 'node-arc')
-    .style('opacity', 0.5)
-    .style('fill', 'red');
+    .style('opacity', 0.75)
+    .style('fill', '#E81B23');
+
+  myNodes
+    .append('path')
+    .attr('d', cosponsorArcInd)
+    .attr('class', 'node-arc')
+    .style('opacity', 0.75)
+    .style('fill', 'white');
 
   return {
     myNodes,
@@ -150,28 +144,51 @@ const renderCircles = (nodeData, linkData) => {
 }
 
 const cosponsorArcDem = arc()
-  .innerRadius(d => d.radius - (d.radius * .1))
-  .outerRadius(d => d.radius - (d.radius * .05))
+  .innerRadius(d => d.radius - (d.radius * .05))
+  .outerRadius(d => d.radius)
   .cornerRadius(12)
   .startAngle(0)
   .endAngle(d => {
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
-    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 1.999 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.D) return 0
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
+    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 2 : 0;
   });
 
 const cosponsorArcRep = arc()
-  .innerRadius(d => d.radius - (d.radius * .1))
-  .outerRadius(d => d.radius - (d.radius * .05))
+  .innerRadius(d => d.radius - (d.radius * .05))
+  .outerRadius(d => d.radius)
   .cornerRadius(12)
   .startAngle(d => {
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
-    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 1.999 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) return 0
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
+    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 2 : 0;
   })
   .endAngle(d => {
-    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / nodeCount) : 0;
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / nodeCount) : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) return 0
+    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
     if (isNaN(cosponsorsPct)) return 0
-    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 1.999 : 0;
+    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 2 : 0;
+  });
+
+const cosponsorArcInd = arc()
+  .innerRadius(d => d.radius - (d.radius * .05))
+  .outerRadius(d => d.radius)
+  .cornerRadius(12)
+  .startAngle(d => {
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) return 0
+    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
+    if (isNaN(cosponsorsPct)) return 0
+    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 2 : 0;
+  })
+  .endAngle(d => {
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) return 0
+    const startPct1 = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
+    const startPct2 = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
+    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.ID ? (d.raw.cosponsors_by_party.ID / d.raw.cosponsors) : 0;
+    if (isNaN(cosponsorsPct)) return 0
+    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct1 + startPct2) * Math.PI * 2 : 0;
   });
 
 const attendedVotewArc = arc()
@@ -182,16 +199,6 @@ const attendedVotewArc = arc()
   .endAngle(d => {
     const attendedVotesPct = (100 - d.raw.missed_votes_pct) || 0;
     return (attendedVotesPct / 100) * Math.PI * 1.999;
-  });
-
-const partyVotewArc = arc()
-  .innerRadius(d => d.radius - (d.radius * .15))
-  .outerRadius(d => d.radius - (d.radius * .2))
-  .cornerRadius(12)
-  .startAngle(0)
-  .endAngle(d => {
-    const partyVotesPct = d.raw.votes_with_party_pct || 0;
-    return ((partyVotesPct / 100) * Math.PI * 1.999);
   });
 
 /*

@@ -30,6 +30,13 @@ const createNodeData = (data, width, height) => {
         color: 'grey'
       }
     }
+    let color = 'white';
+    if (dataPoint.party === 'D') {
+      color ='#3333FF'
+    }
+    if (dataPoint.party === 'R') {
+      color ='#E81B23'
+    }
     return {
       id: dataPoint.id,
       x: dataPoint.party === 'D' ? width * 0.33 : width * 0.66,
