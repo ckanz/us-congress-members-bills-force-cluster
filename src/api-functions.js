@@ -1,6 +1,7 @@
 import { token } from './creds.json'
 
 const loadingMessage = document.getElementsByClassName('loading')
+const loadingContainer = document.getElementById('loading-container')
 const apiCalls = []
 const MAX_NUM_BILLS = 100
 
@@ -25,6 +26,7 @@ const fetchBills = (billsArray = [], callback) => {
   getApiData(billsUrl, response => {
     billsArray = billsArray.concat(response.results[0].bills)
     loadingMessage[1].value = billsArray.length
+    loadingMessage[2].innerHTML = `${(billsArray.length / MAX_NUM_BILLS) * 100}%`
     if (billsArray.length >= MAX_NUM_BILLS) {
       callback(billsArray)
     } else {
@@ -36,22 +38,21 @@ const fetchBills = (billsArray = [], callback) => {
 const fetchData = callback => {
   const CONGRESS_NUMBER = document.getElementById('congress').value || 116
   const CONGRESS_TYPE = document.getElementById('chamber').value || 'senate'
-  loadingMessage[0].style.opacity = 1
-  loadingMessage[1].style.opacity = 1
+  loadingContainer.style.opacity = 1
   loadingMessage[1].value = 0
+  loadingMessage[2].innerHTML = '0%'
 
   setInterval(() => {
-    loadingMessage[1].value += .1
+    loadingMessage[1].value += .05
   }, 100)
 
   const membersUrl = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
   let billsArray = []
 
-  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members of the ${CONGRESS_NUMBER}th Congress ...`
+  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members and their most recent bills of the ${CONGRESS_NUMBER}th Congress ...`
 
   getApiData(membersUrl, response => {
     loadingMessage[1].max = MAX_NUM_BILLS
-    loadingMessage[1].value = 10
     const membersArray = response.results[0].members
     fetchBills([], billsArray => {
       const membersAndBills = membersArray.concat(billsArray)
@@ -60,8 +61,7 @@ const fetchData = callback => {
         links: billsArray
       })
 
-      loadingMessage[0].style.opacity = 0
-      loadingMessage[1].style.opacity = 0
+      loadingContainer.style.opacity = 0
       console.log('API calls made:', apiCalls)
     })
     /*

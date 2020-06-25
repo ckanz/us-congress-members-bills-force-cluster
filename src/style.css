@@ -4,10 +4,7 @@ body {
 
 #interaction {
   border-bottom: 1px solid grey;
-}
-
-#interaction span {
-  margin-left: 12px;
+  padding-left: 12px;
 }
 
 .cluster-circle {
@@ -17,6 +14,10 @@ body {
 
 .cluster-circle:hover {
   stroke-width: 1.0;
+}
+
+svg {
+  width: 100%;
 }
 
 .node-text {
@@ -40,10 +41,9 @@ body {
 }
 
 .top-fixed {
-  width: 100%;
 }
 
-#loading {
+#loading-container {
   text-align: center;
   margin-top: 250px;
   font-size: 14px;
@@ -52,8 +52,28 @@ body {
   left: 0px;
   width: 100%;
   pointer-events: none;
+  opacity: 0.0;
+  transition: opacity 2s;
 }
 
 .loading {
-  transition: opacity 2s;
+}
+
+.input-group {
+  padding-right: 50px;
+}
+
+.input-group select {
+  padding: 5px;
+}
+
+#help {
+  cursor: pointer;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+#help p {
+  padding: 2px;
 }
