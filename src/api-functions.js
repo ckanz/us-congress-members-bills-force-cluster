@@ -48,7 +48,7 @@ const fetchData = callback => {
   const membersUrl = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/members.json`
   let billsArray = []
 
-  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members and their most recent bills of the ${CONGRESS_NUMBER}th Congress ...`
+  loadingMessage[0].innerHTML = `Fetching ${CONGRESS_TYPE} members and their most recent bills of the ${CONGRESS_NUMBER}th US Congress ...`
 
   getApiData(membersUrl, response => {
     loadingMessage[1].max = MAX_NUM_BILLS

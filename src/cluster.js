@@ -46,7 +46,7 @@ const renderCircles = (nodeData, linkData) => {
     .attr('y2', 0)
     .style('opacity', 0)
     .transition()
-    .delay((d, i) => nodeData.length * 3 + (i * 3))
+    .delay((d, i) => 2000 + (nodeData.length * 3) + (i * 3))
     .style('opacity', 1)
     // TODO: any bill value to map on links?
     // .style('opacity', d => d.value / 100)
@@ -57,13 +57,14 @@ const renderCircles = (nodeData, linkData) => {
     .selectAll('g')
     .data(nodeData)
     .enter()
-    .append('g');
+    .append('g')
+    .attr('class', 'cluster-node')
 
-   myNodes.style('opacity', 0)
+   myNodes
+    .style('opacity', 0)
     .transition()
-    .delay((d, i) => i * 3)
+    .delay((d, i) => 1000 + (i * 3))
     .style('opacity', 1)
-    .attr('class', 'cluster-node');
 
   /*
   myNodes
