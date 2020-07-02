@@ -14,6 +14,7 @@ const height = window.innerHeight || 500
 
 document.getElementById('congress').onchange = e => { init() }
 document.getElementById('chamber').onchange = e => { init() }
+// document.getElementById('bills').onclick = e => { init() }
 
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {

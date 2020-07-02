@@ -21,10 +21,10 @@ const getApiData = (url, callback) => {
 const fetchBills = (billsArray = [], callback) => {
   const CONGRESS_NUMBER = document.getElementById('congress').value || 116
   const CONGRESS_TYPE = document.getElementById('chamber').value || 'senate'
-  const billQuery = document.getElementById('bill-query').value
-  const billsUrl = !billQuery
+  const billSearchQuery = undefined // document.getElementById('bill-query').value
+  const billsUrl = !billSearchQuery
     ? `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/bills/introduced.json?offset=${billsArray.length}`
-    : ''
+    : `https://api.propublica.org/congress/v1/bills/search.json?query=${billSearchQuery}&offset=${billsArray.length}`
   console.log('calling', billsUrl)
   getApiData(billsUrl, response => {
     billsArray = billsArray.concat(response.results[0].bills)
