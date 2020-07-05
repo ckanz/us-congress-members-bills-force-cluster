@@ -66,12 +66,6 @@ const renderCircles = (nodeData, linkData) => {
     .delay((d, i) => 1000 + (i * 3))
     .style('opacity', 1)
 
-  /*
-  myNodes
-    .on('mouseenter', enterNode)
-    .on('mouseleave', exitNode);
-  */
-
   myNodes
     .on('click', d => {
       if (d.raw.url) {
@@ -201,101 +195,6 @@ const attendedVotewArc = arc()
     const attendedVotesPct = (100 - d.raw.missed_votes_pct) || 0;
     return (attendedVotesPct / 100) * Math.PI * 1.999;
   });
-
-/*
-const fbLogo = require('./images/fb.png');
-const ytLogo = require('./images/yt.png');
-const gtLogo = require('./images/gt.jpeg');
-const vsLogo = require('./images/vs.png');
-const urlLogo = require('./images/url.png');
-
-const addLeafCircle = (node, x, y, r, url, img) => {
-  const leafCircle = node.insert('g').attr('class', 'leaf-circle');
-
-  // TODO: use icons from file
-  img = img || 'https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png';
-
-  leafCircle
-    .append('circle')
-    .style('stroke-width', 0)
-    .on('click', () => {
-      if (url) {
-        window.open(url);
-      } else {
-        console.log('No URL for this page available :-(');
-        console.log(url);
-      }
-    })
-    .attr('cx', x)
-    .attr('cy', y)
-    .attr('r', 0)
-    .transition()
-    .attr('r', r)
-
-    leafCircle
-      .append('image')
-      .attr('class', 'leaf-circle-icon')
-      .attr('x', x - r)
-      .attr('y', y - r)
-      .attr('width', r * 2)
-      .attr('height', r * 2)
-      .attr('xlink:href', img)
-      .style('opacity', 0)
-      .transition()
-      .style('opacity', 1)
-      .style('pointer-events', 'none');
-
-}
-
-const addLeaves = (node, { radius, raw }) => {
-  const leafRadius = radius / 4;
-  const centerLeafX = radius + (radius / 3);
-  const sideLeafX = radius - leafRadius / 2;
-
-  // TODO: only add leaves when ids exist
-  const { youtube_id, twitter_id, facebook_account, votesmart_id, govtrack_id, url } = raw
-  if (youtube_id) addLeafCircle(node, 0, -centerLeafX, leafRadius, `https://youtube.com/${youtube_id}`, ytLogo.default);
-  if (twitter_id) addLeafCircle(node, sideLeafX, -radius, leafRadius, `https://twitter.com/${twitter_id}`);
-  if (facebook_account) addLeafCircle(node, -sideLeafX, -radius, leafRadius, `https://facebook.com/${facebook_account}`, fbLogo.default);
-
-  if (url) addLeafCircle(node, -sideLeafX, radius, leafRadius, url, urlLogo.default);
-  if (votesmart_id) addLeafCircle(node, sideLeafX, radius, leafRadius, `https://votesmart.org/candidate/${votesmart_id}`, vsLogo.default);
-  if (govtrack_id) addLeafCircle(node, 0, centerLeafX, leafRadius, `https://www.govtrack.us/congress/members/${govtrack_id}`, gtLogo.default);
-
-  node
-    .insert('circle', 'circle')
-    .attr('class', 'hover-circle')
-    .style('opacity', 0)
-    .attr('r', centerLeafX + leafRadius)
-    .attr('cx', 0)
-    .attr('cy', 0);
-};
-
-const enterNode = (d, i, e) => {
-  // selectAll('.cluster-node').transition().style('opacity', 0.3);
-  const node = select(e[i]);
-  node.raise();
-  node.transition().style('opacity', 1);
-  addLeaves(node, d);
-
-  // TODO: add line, text and legend for arcs on hover
-};
-
-const exitNode = ({ radius, text }, i, e) => {
-  // selectAll('.cluster-node').transition().style('opacity', 1);
-  const node = select(e[i]);
-  node.selectAll('.leaf-circle image')
-    .transition()
-    .style('opacity', 0);
-  node.selectAll('.leaf-circle circle')
-    .transition()
-    .attr('r', 0)
-    .on('end', () => {
-      node.selectAll('.leaf-circle').remove();
-    });
-  node.selectAll('.hover-circle').remove();
-};
-*/
 
 export {
   renderCircles,
