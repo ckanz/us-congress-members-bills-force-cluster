@@ -12,9 +12,11 @@ beforeEach(() => {
   svg.setAttribute('id', 'viz-container')
   document.body.appendChild(svg);
 })
+
 afterEach(() => {
   svg.remove()
 })
+
 describe('renderCircles', () => {
   it('handles missing container', () => {
     svg.remove()
@@ -29,5 +31,13 @@ describe('renderCircles', () => {
     const result = renderCircles(nodeData, linkData)
     expect(result.myNodes.size()).toBe(201)
     expect(result.myLines.size()).toBe(100)
+  });
+});
+
+describe('getForce', () => {
+  it('returns the force', () => {
+    const forceResult = getForce()
+    expect(forceResult.force).toBeTruthy()
+
   });
 });

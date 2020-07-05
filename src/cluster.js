@@ -3,7 +3,7 @@ import { arc } from 'd3-shape';
 import { forceSimulation, forceCollide, forceManyBody, forceLink, forceCenter } from 'd3-force';
 import { getVotesWithPartyPct } from './data-processing';
 
-const getForce = (nodeData, linkData, clusterElement, lineElement) => {
+const getForce = (nodeData = [], linkData = [], clusterElement, lineElement) => {
   const myForce = forceSimulation()
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
     .force("charge", forceManyBody().strength(0.7))

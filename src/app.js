@@ -34,13 +34,14 @@ const createForceCluster = data => {
   }, 200)
 
   mySvg.call(myZoom)
+  return mySvg
 }
 
 mySvg.style('height', height)
 
-const init = () => {
+export const init = useLocalData => {
   select('#viz-container').selectAll('*').remove()
-  if (live) {
+  if (useLocalData) {
     fetchData(data => {
       createForceCluster(data)
     })
@@ -49,4 +50,4 @@ const init = () => {
   }
 }
 
-init()
+init(live)
