@@ -71,7 +71,7 @@ const renderCircles = (nodeData, linkData) => {
       } else {
         console.log('No URL available for this node.', d);
       }
-      console.log(d)
+      console.log('clicked node:', d)
     })
     .style('cursor', d => d.raw.url || d.raw.congressdotgov_url ? 'pointer' : 'default');
 
@@ -93,7 +93,9 @@ const renderCircles = (nodeData, linkData) => {
     .append('xhtml:div')
     .attr('class', 'node-text')
     .attr('style', d => {
-      if (d.raw.bill_id) return `height: ${d.radius * 2}px; font-size: ${d.radius / 8}px;`;
+      if (d.raw.bill_id) {
+        return `height: ${d.radius * 2}px; font-size: ${d.radius / 8}px;`;
+      }
       return `height: ${d.radius * 2}px; font-size: ${d.radius / 4}px;`;
     })
     .text(d => (d.text.substring(0, 150)) + (d.text.length > 150 ? '...' : ''));

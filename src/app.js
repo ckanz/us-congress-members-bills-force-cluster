@@ -6,7 +6,7 @@ import { renderCircles, getForce } from './cluster'
 import { select } from 'd3-selection'
 import { zoom } from 'd3-zoom'
 
-const membersAndBills = require('./members-and-bills.json')
+const localStaticMembersAndBills = require('./members-and-bills.json')
 const live = true
 const mySvg = select('svg')
 const width = window.innerWidth || 1000
@@ -42,13 +42,10 @@ const init = () => {
   select('#viz-container').selectAll('*').remove()
   if (live) {
     fetchData(data => {
-      // console.log('live data:')
-      // console.log(data)
-      // console.log(JSON.stringify(data))
       createForceCluster(data)
     })
   } else {
-    createForceCluster(membersAndBills)
+    createForceCluster(localStaticMembersAndBills)
   }
 }
 
