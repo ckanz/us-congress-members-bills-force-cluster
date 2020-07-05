@@ -134,52 +134,59 @@ const renderCircles = (nodeData, linkData) => {
   };
 }
 
-const cosponsorArcDem = arc()
+const getCosponsorArc = () => arc()
   .innerRadius(d => d.radius - (d.radius * .05))
   .outerRadius(d => d.radius)
   .cornerRadius(12)
+
+const getCosponsorPctForParty = (d, partyKey) => d.raw.cosponsors_by_party && d.raw.cosponsors_by_party[partyKey]
+  ? (d.raw.cosponsors_by_party[partyKey] / d.raw.cosponsors)
+  : 0
+
+const getCosponsorRadiusForParty = (d, partyKey, startPct = 0) => {
+  const cosponsorsPct = getCosponsorPctForParty(d, partyKey)
+  return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 2 : 0;
+}
+
+const cosponsorArcDem = getCosponsorArc()
   .startAngle(0)
   .endAngle(d => {
-    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.D) return 0
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
-    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 2 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.D) {
+      return 0
+    }
+    return getCosponsorRadiusForParty(d, 'D')
   });
 
-const cosponsorArcRep = arc()
-  .innerRadius(d => d.radius - (d.radius * .05))
-  .outerRadius(d => d.radius)
-  .cornerRadius(12)
+const cosponsorArcRep = getCosponsorArc()
   .startAngle(d => {
-    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) return 0
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
-    return !isNaN(cosponsorsPct) ? cosponsorsPct * Math.PI * 2 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) {
+      return 0
+    }
+    return getCosponsorRadiusForParty(d, 'D')
   })
   .endAngle(d => {
-    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) return 0
-    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
-    if (isNaN(cosponsorsPct)) return 0
-    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 2 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.R) {
+      return 0
+    }
+    const startPct = getCosponsorPctForParty(d, 'D')
+    return getCosponsorRadiusForParty(d, 'R', startPct)
   });
 
-const cosponsorArcInd = arc()
-  .innerRadius(d => d.radius - (d.radius * .05))
-  .outerRadius(d => d.radius)
-  .cornerRadius(12)
+const cosponsorArcInd = getCosponsorArc()
   .startAngle(d => {
-    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) return 0
-    const startPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
-    if (isNaN(cosponsorsPct)) return 0
-    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct) * Math.PI * 2 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) {
+      return 0
+    }
+    const startPct = getCosponsorPctForParty(d, 'D')
+    return getCosponsorRadiusForParty(d, 'R', startPct)
   })
   .endAngle(d => {
-    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) return 0
-    const startPct1 = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.R ? (d.raw.cosponsors_by_party.R / d.raw.cosponsors) : 0;
-    const startPct2 = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.D ? (d.raw.cosponsors_by_party.D / d.raw.cosponsors) : 0;
-    const cosponsorsPct = d.raw.cosponsors_by_party && d.raw.cosponsors_by_party.ID ? (d.raw.cosponsors_by_party.ID / d.raw.cosponsors) : 0;
-    if (isNaN(cosponsorsPct)) return 0
-    return !isNaN(cosponsorsPct) ? (cosponsorsPct + startPct1 + startPct2) * Math.PI * 2 : 0;
+    if (!d.raw.cosponsors_by_party || !d.raw.cosponsors_by_party.ID) {
+      return 0
+    }
+    const startPct1 = getCosponsorPctForParty(d, 'D')
+    const startPct2 = getCosponsorPctForParty(d, 'R')
+    return getCosponsorRadiusForParty(d, 'ID', (startPct1 + startPct2))
   });
 
 const attendedVotewArc = arc()
