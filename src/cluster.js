@@ -27,7 +27,7 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
   return myForce;
 };
 
-const renderCircles = (nodeData, linkData) => {
+const renderCircles = (nodeData = [], linkData = []) => {
   const vizContainer = select('#viz-container')
   if (!vizContainer || vizContainer.empty()) {
     return
