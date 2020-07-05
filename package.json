@@ -2,7 +2,7 @@
   "name": "us-congress-members-bills-force-cluster",
   "version": "1.0.0",
   "description": "This purpose of this project is to create a web application to monitor members of of the US congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).",
-  "main": "src/app.js",
+  "main": "src/js/app.js",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
     "serve": "webpack-dev-server --config webpack.config.js --mode development",
