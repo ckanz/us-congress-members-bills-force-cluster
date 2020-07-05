@@ -12,9 +12,9 @@ const mySvg = select('svg')
 const width = window.innerWidth || 1000
 const height = window.innerHeight || 500
 
-document.getElementById('congress').onchange = e => { init() }
-document.getElementById('chamber').onchange = e => { init() }
-// document.getElementById('bills').onclick = e => { init() }
+document.getElementById('congress').onchange = e => { init(live) }
+document.getElementById('chamber').onchange = e => { init(live) }
+// document.getElementById('bills').onclick = e => { init(live) }
 
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
