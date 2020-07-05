@@ -1,6 +1,8 @@
 # US Congress Members & Bills Force Cluster
 
-This project is a small web application to access members of US Congress and their latest bills using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/). It was created as part of a coding excersie for a past job application.
+This project is a small web application to access members of US Congress and their latest bills using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/). It was created as part of a coding excersie for a past job application. The project is hosted on [http://congress.clemens-anzmann.com/](http://congress.clemens-anzmann.com/).
+
+![screenshot](https://github.com/ckanz/us-congress-members-bills-force-cluster/blob/master/Screenshot_2020-07-05_20-35-09.png?raw=true)
 
 Documentation and sketches of the concept phase can be found in the `concept` folder.
 
