@@ -4,4 +4,13 @@ This project is a small web application to access members of US Congress and the
 
 Documentation and sketches of the concept phase can be found in the `concept` folder.
 
+### Development
+
 The code of the project is located in the `src` folder.
+
+To set the project up locally:
+
+- install dependencies with `npm install`
+- build project to `dist` folder with `npm build`
+- run tests with `npm test`
+- serve project on `localhost` with `npm run serve`
