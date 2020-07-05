@@ -1,18 +1,16 @@
-# congressional-representatives-california-visualisation
+# US Congress Members & Bills Force Cluster
 
-This purpose of this project is to create a web application to monitor the behaviour of Californian Members of Congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).
+This project is a small web application to access members of US Congress and their latest bills using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/). It was created as part of a coding excersie for a past job application.
 
-Documentation of the concept phase can be found in the `concept` folder.
+Documentation and sketches of the concept phase can be found in the `concept` folder.
 
-The Frontend project itself is located in the `src` folder.
+### Development
 
-Remaining issues are among others:
+The code of the project is located in the `src` folder.
 
-* fixing zoom & drag
-* fixing the layout (only works for desktop and not that well for different screens)
-* breaking down `app.js` file.
-* document functions
-* add legend and instructions how to interpret the chart to the page
-* format statements container
-* write tests
-* etc
+To set the project up locally:
+
+- install dependencies with `npm install`
+- build project to `dist` folder with `npm build`
+- run tests with `npm test`
+- serve project on `localhost` with `npm run serve`

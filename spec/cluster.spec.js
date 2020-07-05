@@ -1,7 +1,7 @@
-import { renderCircles, getForce } from '../src/cluster'
-import { createNodeData, createLinkData } from '../src/data-processing'
+import { renderCircles, getForce } from '../src/js/cluster'
+import { createNodeData, createLinkData } from '../src/js/data-processing'
 
-const localStaticMembersAndBills = require('../src/members-and-bills.json')
+const localStaticMembersAndBills = require('../src/js/members-and-bills.json')
 const nodeData = createNodeData(localStaticMembersAndBills.nodes, 1000, 500)
 const linkData = createLinkData(localStaticMembersAndBills.links)
 
