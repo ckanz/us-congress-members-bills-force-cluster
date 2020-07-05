@@ -8,8 +8,6 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
     .force("center", forceCenter(window.innerWidth / 2, window.innerHeight / 2))
     .force("charge", forceManyBody().strength(0.7))
     .force('link', forceLink().id(d => d.id).distance(50).strength(1))
-    // TODO: any value to map to force here?
-    // .force('link', forceLink().id(d => d.id).distance(d => (100 - d.value) * 5).strength(0.1))
     .force('collide', forceCollide(d => d.radius * 2).strength(0.1));
 
   const layoutTick = () => {
@@ -48,8 +46,6 @@ const renderCircles = (nodeData, linkData) => {
     .transition()
     .delay((d, i) => 2000 + (nodeData.length * 3) + (i * 3))
     .style('opacity', 1)
-    // TODO: any bill value to map on links?
-    // .style('opacity', d => d.value / 100)
 
   const myNodes = select('#viz-container')
     .append('g')
@@ -86,8 +82,6 @@ const renderCircles = (nodeData, linkData) => {
     .attr('cy', 0)
     .attr('r', d => d.radius)
     .style('fill', d => d.color)
-    // TODO: value to use for opacity (if any)?
-    // .style('opacity', d => getVotesWithPartyPct(d));
 
   myNodes
     .append('foreignObject')

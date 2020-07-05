@@ -63,29 +63,6 @@ const fetchData = callback => {
       loadingContainer.style.opacity = 0
       console.log('API calls made:', apiCalls)
     })
-    /*
-    const billsUrl = `https://api.propublica.org/congress/v1/${CONGRESS_NUMBER}/${CONGRESS_TYPE}/bills/introduced.json`
-    getApiData(billsUrl, response => {
-      loadingMessage[1].value = 66
-      membersArray = membersArray.concat(response.results[0].bills)
-      billsArray = billsArray.concat(response.results[0].bills)
-
-      getApiData(billsUrl + '?offset=20', response => {
-        loadingMessage[1].value = 99
-        membersArray = membersArray.concat(response.results[0].bills)
-        billsArray = billsArray.concat(response.results[0].bills)
-
-        callback({
-          nodes: membersArray,
-          links: billsArray
-        })
-
-        loadingMessage[0].style.display = 'none'
-        loadingMessage[1].style.display = 'none'
-        console.log('API calls made:', apiCalls)
-      })
-    })
-    */
   })
 }
 
