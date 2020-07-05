@@ -1,13 +1,20 @@
 import './style.css'
-import { getMembers } from './api-functions'
+import 'mini.css'
+import { fetchData } from './api-functions'
 import { createNodeData, createLinkData } from './data-processing'
 import { renderCircles, getForce } from './cluster'
 import { select } from 'd3-selection'
 import { zoom } from 'd3-zoom'
 
-const californiaVoting = require('./local-data.json')
-const allMembers = require('./all-members.json')
+const localStaticMembersAndBills = require('./members-and-bills.json')
 const live = true
+const mySvg = select('svg')
+const width = window.innerWidth || 1000
+const height = window.innerHeight || 500
+
+document.getElementById('congress').onchange = e => { init() }
+document.getElementById('chamber').onchange = e => { init() }
+// document.getElementById('bills').onclick = e => { init() }
 
 const myZoom = zoom()
   .on('zoom', (d, i, elements) => {
@@ -17,41 +24,30 @@ const myZoom = zoom()
   })
   .scaleExtent([0.5, 10])
 
-const initVis = data => {
-  const width = window.innerWidth || 1000
-  const height = window.innerHeight || 500
+const createForceCluster = data => {
   const nodeData = createNodeData(data.nodes, width, height)
-  const { myNodes, myLines } = renderCircles(nodeData, data.links)
-  console.log('nodeData', nodeData)
-  const voteDropdown = document.getElementById('vote-dropdown')
-  nodeData.forEach(n => {
-    const voteOption = document.createElement('option')
-    voteOption.setAttribute('value', n.id)
-    voteOption.setAttribute('vid', n.id)
-    voteOption.innerHTML = n.text
-    voteDropdown.appendChild(voteOption)
-  })
+  const linkData = createLinkData(data.links)
+  const { myNodes, myLines } = renderCircles(nodeData, linkData)
 
   setTimeout(() => {
-    getForce(nodeData, data.links, myNodes, myLines)
+    getForce(nodeData, linkData, myNodes, myLines)
   }, 200)
 
-  select('svg').style('height', height).call(myZoom)
+  mySvg.call(myZoom)
+  return mySvg
 }
 
-if (live) {
-  getMembers(data => {
-    console.log(data)
-    console.log(JSON.stringify(data))
-    initVis(data)
-  })
-} else {
-  initVis(allMembers)
-  console.log(allMembers)
+mySvg.style('height', height)
+
+export const init = useLocalData => {
+  select('#viz-container').selectAll('*').remove()
+  if (useLocalData) {
+    fetchData(data => {
+      createForceCluster(data)
+    })
+  } else {
+    createForceCluster(localStaticMembersAndBills)
+  }
 }
 
-// TODO: change radius of cluster nodes to selected metric
-document.getElementById('size-dropdown').addEventListener('change', (e) => {
-  alert(`Sizing by ${e.srcElement.value} not implemented yet.`)
-  e.srcElement.value = 'Seneriority'
-})
+init(live)

@@ -2,37 +2,74 @@
 <html>
 
 <body>
-    <svg class="top-fixed">
-    <g id="viz-container"></g>
-    </svg>
-    <div id="top-bar" class="top-fixed">
-        <h2>House Members of the 116th US Congress</h2>
-        <div class="interaction-bar">
-            <span>Size Nodes by: </span>
-            <select id="size-dropdown">
-              <option value="Seneriority">Seneriority</option>
-              <option value="Bills sponsored">Bills sponsored</option>
-              <option value="Bills co-sponsored">Bills co-sponsored</option>
-              <option value="Bills (co-)sponsored">Bills (co-)sponsored</option>
-              <option value="Total Expenses">Total Expense</option>
+    <div id="header" class="sticky">
+        <h1>US Congress Members and Bills</h1>
+        <div id="interaction">
+            <span>Select Congress: </span>
+            <select id="congress" selected="116">
+                  <option value="116">116th</option>
+                  <option value="115">115th</option>
+                  <option value="114">114th</option>
+                  <option value="113">113th</option>
+                </select>
+            <span class="divider">|</span>
+            <span>Select Chamber: </span>
+            <select id="chamber" selected="Senate">
+                  <option value="senate">Senate</option>
+                  <option value="house">House</option>
             </select>
-            <span>Get Votes for: </span>
-            <select id="vote-dropdown" onChange="ev(this)">
-            </select>
+            <!--<span class="divider">|</span>
+            <label for="bill-query">Bills that contain:</label>
+            <input type="text" id="bill-query" placeholder="Search for bills..." />
+            <input type="button" value="Get bills" id="bills" />-->
+        </div>
+        <label id="help" for="modal-control">
+              <p class="doc bordered rounded"><span class="icon-help"></span>&nbsp;What is this?</p>
+            </label>
+        <input type="checkbox" id="modal-control" class="modal">
+        <div>
+            <div class="card fluid">
+                <label for="modal-control" class="modal-close"></label>
+                <h3 class="section">US Congress Members & Bills Force Cluster Layout</h3>
+                <div class="section doc">
+                    <p>This project displays all members of the US congress and the
+                        100 most recent bills as node in a force cluster layout.
+                        Bills are connected to the member who introduced the bill.</p>
+                    <p>The size of the nodes of congress members relate to the member's
+                        seniority. Sizes of bill nodes indicates the amount of
+                        cosponsors a bill has.</p>
+                    <p>The arc inside a member node indicates how many votes the member
+                        attended (in precent). The border colours around the bill
+                        nodes shows the ditribution of party affilitation of the
+                        cosponsors.
+                    </p>
+                    <p>You can click on a node to be redirected to the website of
+                        the member/bill.
+                    </p>
+                    <p>You can use the browser's search feature to highlight text
+                        of members or bills.</p>
+                </div>
+            </div>
+        </div>
+        <div id="loading-container">
+            <div class="loading"></div>
+            <progress class="loading" value="0" max="100"></progress>
+            <div class="spinner"></div>
+            <div class="loading"></div>
         </div>
     </div>
-    <div id="loading">
-        <div class="loading"></div>
-        <div class="loading"></div>
-    </div>
+    <svg>
+      <g id="viz-container"></g>
+    </svg>
+    <footer class="sticky">
+        <p><a href="https://github.com/ckanz/congressional-representatives-california-visualisation/blob/master/LICENSE"
+                target="blank">© 2020 Clemens Anzmann</a> | Data comes from the
+            <a href="https://projects.propublica.org/api-docs/congress-api/" target="blank">ProPublica Congress API</a>.
+            Created with <a href="https://d3js.org/" target="blank">D3</a> and
+            <a href="https://minicss.org/" target="blank">mini.css</a> components.
+            You can find the code of the project on <a href="https://github.com/ckanz/congressional-representatives-california-visualisation"
+                target="blank">GitHub</a>.</p>
+    </footer>
 </body>
-
-<script>
-  var ev = function(target) {
-    console.log(target.value);
-    var currentLocation = window.location.href.split('?')[0];
-    window.location.href = currentLocation + '?votes=' + target.value;
-  };
-</script>
 
 </html>
