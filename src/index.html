@@ -4,6 +4,7 @@
 <body>
     <div id="header" class="sticky">
         <h1>US Congress Members and Bills</h1>
+
         <div id="interaction">
             <span>Select Congress: </span>
             <select id="congress" selected="116">
@@ -23,9 +24,14 @@
             <input type="text" id="bill-query" placeholder="Search for bills..." />
             <input type="button" value="Get bills" id="bills" />-->
         </div>
+
         <label id="help" for="modal-control">
-              <p class="doc bordered rounded"><span class="icon-help"></span>&nbsp;What is this?</p>
-            </label>
+            <p class="doc bordered rounded">
+                <span class="icon-help"></span>
+                <span>&nbsp;What is this?</span>
+            </p>
+        </label>
+
         <input type="checkbox" id="modal-control" class="modal">
         <div>
             <div class="card fluid">
@@ -51,12 +57,23 @@
                 </div>
             </div>
         </div>
+
+        <label id="show-error" for="modal-error-control"></label>
+        <input type="checkbox" id="modal-error-control" class="modal">
+        <div>
+            <div class="card fluid">
+                <h3 class="section">An error happened :(</h3>
+                <pre id="error-message"></pre>
+            </div>
+        </div>
+
         <div id="loading-container">
             <div class="loading"></div>
             <progress class="loading" value="0" max="100"></progress>
             <div class="spinner"></div>
             <div class="loading"></div>
         </div>
+
     </div>
     <svg>
       <g id="viz-container"></g>

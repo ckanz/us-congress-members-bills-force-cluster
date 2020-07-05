@@ -24,6 +24,11 @@ const myZoom = zoom()
   })
   .scaleExtent([0.5, 10])
 
+const handleError = e => {
+  document.getElementById('show-error').click()
+  document.getElementById('error-message').innerHTML = e.reason.message
+}
+
 const createForceCluster = data => {
   const nodeData = createNodeData(data.nodes, width, height)
   const linkData = createLinkData(data.links)
@@ -49,5 +54,8 @@ export const init = useLocalData => {
     createForceCluster(localStaticMembersAndBills)
   }
 }
+
+window.addEventListener('error', handleError)
+window.addEventListener('unhandledrejection', handleError)
 
 init(live)
