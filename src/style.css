@@ -2,19 +2,15 @@ body {
   overflow: hidden;
 }
 
-#header h1 {
-  border-bottom: .0625rem solid var(--card-border-color);
+#header h1, #interaction {
+  border-bottom: .0625rem solid lightgrey;
   margin: 0px;
   padding: 12px;
 }
 
-#interaction {
-  border-bottom: .0625rem solid var(--card-border-color);
-  padding-left: 12px;
-}
-
 .divider {
   padding: 25px;
+  font-size: 25px;
 }
 
 .cluster-circle {
@@ -41,13 +37,6 @@ svg {
 .cluster-line {
   stroke: black;
   stroke-width: 0.5;
-}
-
-.leaf-circle {
-  fill: lightgrey;
-  stroke: black;
-  stroke-width: 1px;
-  cursor: pointer;
 }
 
 #loading-container {
