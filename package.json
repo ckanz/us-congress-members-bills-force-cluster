@@ -1,7 +1,7 @@
 {
-  "name": "congressional-representatives-california-visualisation",
-  "version": "0.2.0",
-  "description": "This purpose of this project is to create a web application to monitor the behaviour of Californian Members of Congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).",
+  "name": "us-congress-members-bills-force-cluster",
+  "version": "1.0.0",
+  "description": "This purpose of this project is to create a web application to monitor members of of the US congress using the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/).",
   "main": "src/app.js",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ckanz/congressional-representatives-california-visualisation.git"
+    "url": "git+https://github.com/ckanz/us-congress-members-bills-force-cluster.git"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
@@ -34,9 +34,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ckanz/congressional-representatives-california-visualisation/issues"
+    "url": "https://github.com/ckanz/us-congress-members-bills-force-cluster/issues"
   },
-  "homepage": "https://github.com/ckanz/congressional-representatives-california-visualisation#readme",
+  "homepage": "https://github.com/ckanz/us-congress-members-bills-force-cluster#readme",
   "dependencies": {
     "d3-array": "^2.0.3",
     "d3-force": "^1.1.2",
