@@ -2,6 +2,7 @@ import { token } from './creds.json'
 
 const loadingMessage = document.getElementsByClassName('loading')
 const loadingContainer = document.getElementById('loading-container')
+const vizContainer = document.getElementById('viz-container')
 const apiCalls = []
 const MAX_NUM_BILLS = 100
 
@@ -61,6 +62,7 @@ const fetchData = callback => {
       })
 
       loadingContainer.style.opacity = 0
+      vizContainer.style.opacity = 1
       console.log('API calls made:', apiCalls)
     })
   })

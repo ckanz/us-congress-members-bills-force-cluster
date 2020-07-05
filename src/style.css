@@ -26,6 +26,11 @@ svg {
   width: 100%;
 }
 
+#viz-container {
+  opacity: 0;
+  transition: opacity 3s;
+}
+
 .node-text {
   text-align: center;
   display: flex;

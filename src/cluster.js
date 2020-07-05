@@ -28,7 +28,12 @@ const getForce = (nodeData, linkData, clusterElement, lineElement) => {
 };
 
 const renderCircles = (nodeData, linkData) => {
-  const myLines = select('#viz-container')
+  const vizContainer = select('#viz-container')
+  if (!vizContainer || vizContainer.empty()) {
+    return
+  }
+
+  const myLines = vizContainer
     .append('g')
     .attr('id', 'line-container')
     .selectAll('line')
@@ -42,10 +47,6 @@ const renderCircles = (nodeData, linkData) => {
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
-    .style('opacity', 0)
-    .transition()
-    .delay((d, i) => 2000 + (nodeData.length * 3) + (i * 3))
-    .style('opacity', 1)
 
   const myNodes = select('#viz-container')
     .append('g')
@@ -55,12 +56,6 @@ const renderCircles = (nodeData, linkData) => {
     .enter()
     .append('g')
     .attr('class', 'cluster-node')
-
-   myNodes
-    .style('opacity', 0)
-    .transition()
-    .delay((d, i) => 1000 + (i * 3))
-    .style('opacity', 1)
 
   myNodes
     .on('click', d => {
@@ -78,6 +73,7 @@ const renderCircles = (nodeData, linkData) => {
   myNodes
     .append('circle')
     .attr('class', 'cluster-circle')
+    .style('opacity', 1)
     .attr('cx', 0)
     .attr('cy', 0)
     .attr('r', d => d.radius)
